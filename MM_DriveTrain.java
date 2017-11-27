@@ -29,7 +29,17 @@ public class MM_DriveTrain {
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.FORWARD);
+
+        setToRunWithoutEncoders();
     }
+
+    private void setToRunWithoutEncoders() {
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     public void driveWithControl (){
         frontLeftPower = -opMode.gamepad1.left_stick_y + opMode.gamepad1.left_stick_x + opMode.gamepad1.right_stick_x;
         frontRightPower = -opMode.gamepad1.left_stick_y - opMode.gamepad1.left_stick_x - opMode.gamepad1.right_stick_x;
@@ -52,11 +62,11 @@ public class MM_DriveTrain {
         setMotorPower(.25, -.25, -.25, .25);
 
     }
-    public void turnRight(double setMotorPower){
-        setMotorPower(frontLeftPower, -frontRightPower, backLeftPower, -backRightPower);
+    public void turnRight(double power){
+        setMotorPower(power, -power, power, -power);
     }
-    public void turnLeft(double setMotorPower){
-        setMotorPower(-frontLeftPower, frontRightPower, -backLeftPower, backRightPower);
+    public void turnLeft(double power){
+        setMotorPower(-power, power, -power, power);
     }
     public void stopRobot() {
         setMotorPower(0, 0, 0, 0);

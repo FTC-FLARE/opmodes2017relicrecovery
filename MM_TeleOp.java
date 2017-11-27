@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="MM TeleOp", group="TeleOp")
 //@Disabled
-public class MM_TeleOp extends LinearOpMode {
+public class MM_TeleOp extends MM_OpMode {
 
     private MM_Bot robot = new MM_Bot(this);
 
@@ -24,6 +24,7 @@ public class MM_TeleOp extends LinearOpMode {
             collectOrReleaseGlyph();
             raiseOrLowerGlyph();
             raiseOrLowerJewelArm();
+            grabOrReleaseRelic();
         }
     }
     private void collectOrReleaseGlyph(){
@@ -39,13 +40,13 @@ public class MM_TeleOp extends LinearOpMode {
     }
     private void raiseOrLowerGlyph() {
         if (gamepad2.left_trigger > 0) {
-            robot.collector.lowerGlpyhCollector(1);
+            robot.lift.lowerGlpyhCollector(1);
         }
         else if (gamepad2.right_trigger > 0){
-            robot.collector.raiseGlpyhCollector(1);
+            robot.lift.raiseGlpyhCollector(1);
         }
         else {
-            robot.collector.pauseLift();
+            robot.lift.pauseLift();
         }
     }
     private void raiseOrLowerJewelArm() { // This method is temporary for testing but will be deleted for competition.
@@ -59,17 +60,19 @@ public class MM_TeleOp extends LinearOpMode {
 
     private void placeGlyph () {
         if (gamepad1.a) {
-            //robot.drivetrain.bottomLeft();
+            robot.lift.raiseGlpyhCollector(1);
         }
         else if (gamepad1.b) {
-            //robot.drivetrain.bottomCenter();
-        }
-        else if (gamepad1.y)  {
-            //robot.drivetrain.bottomRight();
-        }
-        else if (gamepad1.x) {
-            //robot.drivetrain.moveTo3And4Level;
+            robot.lift.lowerGlpyhCollector(1);
         }
 
+    }
+    private void grabOrReleaseRelic () {
+        if (gamepad2.dpad_left) {
+            robot.relic.grabRelic();
+        }
+        else if (gamepad2.dpad_right) {
+            robot.relic.releaseRelic();
+        }
     }
 }
