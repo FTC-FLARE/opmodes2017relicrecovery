@@ -24,12 +24,14 @@ public class MM_TeleOp extends MM_OpMode {
             collectOrReleaseGlyph();
             raiseOrLowerGlyph();
             raiseOrLowerJewelArm();
-            grabOrReleaseRelic();
+            closeOrRelease();
+            upOrDown();
+            telemetry.update();
         }
     }
     private void collectOrReleaseGlyph(){
         if (gamepad2.left_bumper) {
-            robot.collector.collect(.5);
+            robot.collector.collect(.25);
         }
         else if (gamepad2.right_bumper) {
             robot.collector.release(1); //Positive because in the release method power was set to negative.
@@ -67,12 +69,20 @@ public class MM_TeleOp extends MM_OpMode {
         }
 
     }
-    private void grabOrReleaseRelic () {
+    private void closeOrRelease () {
         if (gamepad2.dpad_left) {
-            robot.relic.grabRelic();
+            robot.relic.close();
         }
         else if (gamepad2.dpad_right) {
-            robot.relic.releaseRelic();
+            robot.relic.open();
+        }
+    }
+    private void upOrDown () {
+        if (gamepad2.a) {
+            robot.relic.wristDown();
+        }
+        else if (gamepad2.b) {
+            robot.relic.wristUp();
         }
     }
 }
