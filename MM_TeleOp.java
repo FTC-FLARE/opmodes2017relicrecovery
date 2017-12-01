@@ -40,17 +40,20 @@ public class MM_TeleOp extends MM_OpMode {
             robot.collector.pauseCollector();
         }
     }
-    private void raiseOrLowerGlyph() {
-        if (gamepad2.left_trigger > 0) {
-            robot.lift.lowerGlpyhCollector(1);
+
+    /*
+        private void raiseOrLowerGlyph() {
+            if (gamepad2.left_trigger > 0) {
+                robot.lift.lowerGlpyhCollector(1);
+            }
+            else if (gamepad2.right_trigger > 0){
+                robot.lift.raiseGlpyhCollector(1);
+            }
+            else {
+                robot.lift.pauseLift();
+            }
         }
-        else if (gamepad2.right_trigger > 0){
-            robot.lift.raiseGlpyhCollector(1);
-        }
-        else {
-            robot.lift.pauseLift();
-        }
-    }
+    */
     private void raiseOrLowerJewelArm() { // This method is temporary for testing but will be deleted for competition.
         if (gamepad2.dpad_down) {
             robot.jewelarm.lowerJewelArm();
@@ -67,7 +70,6 @@ public class MM_TeleOp extends MM_OpMode {
         else if (gamepad1.b) {
             robot.lift.lowerGlpyhCollector(1);
         }
-
     }
     private void closeOrRelease () {
         if (gamepad2.dpad_left) {
@@ -83,6 +85,28 @@ public class MM_TeleOp extends MM_OpMode {
         }
         else if (gamepad2.b) {
             robot.relic.wristUp();
+        }
+    }
+
+    private void raiseOrLowerGlyph() {
+        if (!robot.lift.bottomIsPressed() && gamepad2.right_trigger > 0) {
+            telemetry.addData("lift", "You're going down");
+            robot.lift.lowerGlpyhCollector(1);
+        } else if (!robot.lift.topIsPressed() && gamepad2.left_trigger > 0) {
+            telemetry.addData("lift", "You're going up");
+            robot.lift.raiseGlpyhCollector(1);
+        } else if (robot.lift.topIsPressed()) {
+            telemetry.addData("lift", "You're stopped");
+            robot.lift.pauseLift();
+        } else if (robot.lift.bottomIsPressed()) {
+            telemetry.addData("lift", "You're stopped");
+            robot.lift.pauseLift();
+        } else if (gamepad2.right_trigger == 0) {
+            telemetry.addData("lift", "You're stopped");
+            robot.lift.pauseLift();
+        } else if (gamepad2.right_trigger == 0) {
+            telemetry.addData("lift", "You're stopped");
+            robot.lift.pauseLift();
         }
     }
 }
