@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes12833;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MM_Relic_Collector {
 
-    private Servo relicXRail = null;
+//    private CRServo armAsCR = null;
     private Servo relicGrabberLeft = null;
     private Servo relicGrabberRight = null;
     private Servo relicWrist = null;
@@ -33,11 +34,11 @@ public class MM_Relic_Collector {
         relicGrabberLeft = opMode.hardwareMap.get(Servo.class, "left_grabber");
         relicGrabberRight = opMode.hardwareMap.get(Servo.class, "right_grabber");
         relicWrist = opMode.hardwareMap.get(Servo.class, "center_grabber");
-        relicXRail = opMode.hardwareMap.get(Servo.class, "relic_arm");
+//        armAsCR = opMode.hardwareMap.get(CRServo.class, "relic_arm");
         relicElbow = opMode.hardwareMap.get(DcMotor.class, "elbow");
 
 
-        relicXRail.setPosition(START_POSITION);
+//        relicXRail.setPosition(START_POSITION);
         relicGrabberLeft.setPosition(START_POSITION_LEFT);
         relicGrabberRight.setPosition(START_POSITION_RIGHT);
         relicWrist.setPosition(START_POSITION);
@@ -66,42 +67,55 @@ public class MM_Relic_Collector {
         setArmPower(-power);
     }
     private void setArmPower(double power) {
-        relicXRail.setPosition(.5);
+//        relicXRail.setPosition(.5);
     }
     public void close () {
         if (currentLeftPosition < 1){
-            currentLeftPosition = currentLeftPosition + .005;
+            currentLeftPosition = currentLeftPosition + .01;
             relicGrabberLeft.setPosition(currentLeftPosition);
         }
         if (currentRightPosition > 0) {
-            currentRightPosition = currentRightPosition - .005;
+            currentRightPosition = currentRightPosition - .01;
             relicGrabberRight.setPosition(currentRightPosition);
         }
     }
     public void open () {
         if (currentLeftPosition > 0){
-            currentLeftPosition = currentLeftPosition - .005;
+            currentLeftPosition = currentLeftPosition - .01;
             relicGrabberLeft.setPosition(currentLeftPosition);
         }
         if (currentRightPosition < 1) {
-            currentRightPosition = currentRightPosition + .005;
+            currentRightPosition = currentRightPosition + .01;
             relicGrabberRight.setPosition(currentRightPosition);
         }
     }
     public void elbow() {
     }
     public void wristDown() {
-        if (currentWristPos < 0.5) {
-            currentWristPos = currentWristPos + .008;
+        if (currentWristPos < 1) {
+            currentWristPos = currentWristPos + .01;
             relicWrist.setPosition(currentWristPos);
             opMode.telemetry.addData("Current Wrist Down", currentWristPos);
         }
     }
     public void wristUp() {
         if (currentWristPos > 0) {
-            currentWristPos = currentWristPos - .008;
+            currentWristPos = currentWristPos - .01;
             relicWrist.setPosition(currentWristPos);
             opMode.telemetry.addData("Current Wrist Up", currentWristPos);
         }
     }
+    public void setElbowPower(double inPower){
+        relicElbow.setPower(inPower);
+        opMode.telemetry.addData("Elbow Power ", inPower);
+    }
+
+    public void setArmPower_K(double inPower) {
+        if(inPower < 0){
+//            armAsCR.setDirection(DcMotor.Direction.REVERSE);
+        }
+//        armAsCR.setPower(inPower);
+        opMode.telemetry.addData("Arm Power ", inPower);
+    }
+
 }
