@@ -23,6 +23,9 @@ public class MM_DriveTrain {
     final static double MOTOR_RPM = 160; //ANDYMARK 40 TO 1
     final static double WHEEL_DIAM = 4;
     final static double OUTPUT_RPS = MOTOR_RPM / 60;
+    final static double DRIVE_POWER = .3;
+    final static double DRIVE_RPS = MOTOR_RPM / 60;
+    final static double DRIVE_INCHES_PER_SEC = DRIVE_RPS * WHEEL_DIAM * Math.PI;
     final static double TURN_POWER = .3;
     final static double WHEEL_BASE = 17.5;
     final static double TURN_RPS = TURN_POWER * OUTPUT_RPS;
@@ -156,5 +159,52 @@ public class MM_DriveTrain {
         double secondsToPointTurn = degrees / TURN_DEGRESS_PER_SEC;
         turnLeftTime(secondsToPointTurn, TURN_POWER);
     }
+    public void driveForwardInches (double inches) {
+        double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
+        forwardTime(secondsToDrive, DRIVE_POWER);
+    }
+    public void driveBackwardInches (double inches) {
+        double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
+        backwardTime(secondsToDrive, DRIVE_POWER);
+    }
+    public void strafeRightTime(double sec, double power) {
+        brakeOn();
+
+        frontLeft.setPower(power);
+        frontRight.setPower(-power);
+        backLeft.setPower(-power);
+        backRight.setPower(power);
+        runtime.reset();
+        while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
+            opMode.telemetry.addData("drive time", "strafe right %2.2f S Elapsed", runtime.seconds());
+            opMode.telemetry.update();
+        }
+        stopRobot();
+    }
+    public void strafeLeftTime(double sec, double power) {
+        brakeOn();
+
+        frontLeft.setPower(-power);
+        frontRight.setPower(power);
+        backLeft.setPower(power);
+        backRight.setPower(-power);
+        runtime.reset();
+        while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
+            opMode.telemetry.addData("drive time", "strafe right %2.2f S Elapsed", runtime.seconds());
+            opMode.telemetry.update();
+        }
+        stopRobot();
+    }
+    public void strafeRightInches(double inches) {
+        double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
+        strafeRightTime(secondsToDrive, DRIVE_POWER);
+    }
+    public void strafeLeftInches(double inches) {
+        double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
+        strafeLeftTime(secondsToDrive, DRIVE_POWER);
+    }
+
+
+
 
 }
