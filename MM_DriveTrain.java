@@ -26,8 +26,8 @@ public class MM_DriveTrain {
     final static double DRIVE_POWER = .3;
     final static double DRIVE_RPS = MOTOR_RPM / 60;
     final static double DRIVE_INCHES_PER_SEC = DRIVE_RPS * WHEEL_DIAM * Math.PI;
-    final static double TURN_POWER = .3;
-    final static double WHEEL_BASE = 17.5;
+    final static double TURN_POWER = .8;
+    final static double WHEEL_BASE = 15.5;
     final static double TURN_RPS = TURN_POWER * OUTPUT_RPS;
     final static double TURN_DEGRESS_PER_SEC = TURN_RPS * WHEEL_DIAM * 360 / WHEEL_BASE;
 

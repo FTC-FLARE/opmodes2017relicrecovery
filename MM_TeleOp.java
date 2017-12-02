@@ -28,7 +28,7 @@ public class MM_TeleOp extends MM_OpMode {
             closeOrRelease();
             upOrDown();
             bendElbow();
-            moveArm();
+//            moveArm();
 
             telemetry.update();
         }
