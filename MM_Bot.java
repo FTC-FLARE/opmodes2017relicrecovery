@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 
 public class MM_Bot {
 
+    public static final double DRIVE_TIME = .35;
+    public static final double DRIVE_POWER = .2;
+
     public MM_DriveTrain drivetrain = null;
     public MM_Glyph_Collector collector = null;
     public MM_Glyph_Lift lift = null;
@@ -27,15 +30,16 @@ public class MM_Bot {
         opMode.telemetry.update();
 
         if (opMode.allianceColor == jewelColor) {
-            drivetrain.turnRight(.5);
+            drivetrain.forwardTime(DRIVE_TIME, DRIVE_POWER);
+            drivetrain.backwardTime(DRIVE_TIME, DRIVE_POWER);
         }
         else if (jewelColor == opMode.NOTHING){
             drivetrain.setMotorPower(0, 0, 0, 0);
         }
         else {
-            drivetrain.turnLeft(.5);
+            drivetrain.backwardTime(DRIVE_TIME, DRIVE_POWER);
+            drivetrain.forwardTime(DRIVE_TIME, DRIVE_POWER);
         }
-        opMode.sleep(500);
         jewelarm.raiseJewelArm();
     }
 

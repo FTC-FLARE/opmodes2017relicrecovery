@@ -13,6 +13,8 @@ public class MM_Red_Left extends MM_OpMode {
 
         robot.jewelarm.lowerJewelArm();
         robot.pushIncorrectJewel();
+        robot.drivetrain.backwardTime(1.2, .4);
+        robot.drivetrain.turnRightDegree(90);
     }
 }
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MM_DriveTrain {
 
@@ -11,11 +12,22 @@ public class MM_DriveTrain {
     public DcMotor backRight = null;
 
     private LinearOpMode opMode;
+    private ElapsedTime runtime = new ElapsedTime();
 
     public double frontLeftPower;
     public double frontRightPower;
     public double backLeftPower;
     public double backRightPower;
+
+    //degrees calculations for testbot
+    final static double MOTOR_RPM = 160; //ANDYMARK 40 TO 1
+    final static double WHEEL_DIAM = 4;
+    final static double OUTPUT_RPS = MOTOR_RPM / 60;
+    final static double TURN_POWER = .3;
+    final static double WHEEL_BASE = 17.5;
+    final static double TURN_RPS = TURN_POWER * OUTPUT_RPS;
+    final static double TURN_DEGRESS_PER_SEC = TURN_RPS * WHEEL_DIAM * 360 / WHEEL_BASE;
+
 
     public MM_DriveTrain(LinearOpMode opMode){
         this.opMode = opMode;
@@ -70,6 +82,79 @@ public class MM_DriveTrain {
     }
     public void stopRobot() {
         setMotorPower(0, 0, 0, 0);
+    }
+    public void forwardTime(double sec, double power) {
+        brakeOn();
+
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+        backLeft.setPower(power);
+        backRight.setPower(power);
+
+        runtime.reset();
+        while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
+            opMode.telemetry.addData("drive time", "forward: %2.2f S Elapsed", runtime.seconds());
+            opMode.telemetry.update();
+        }
+        stopRobot();
+    }
+
+    private void brakeOn() {
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public void backwardTime(double sec, double power) {
+        brakeOn();
+
+        frontLeft.setPower(-power);
+        frontRight.setPower(-power);
+        backLeft.setPower(-power);
+        backRight.setPower(-power);
+        runtime.reset();
+        while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
+            opMode.telemetry.addData("drive time", "backward: %2.2f S Elapsed", runtime.seconds());
+            opMode.telemetry.update();
+        }
+        stopRobot();
+    }
+    public void turnRightTime(double sec, double power) {
+        brakeOn();
+
+        frontLeft.setPower(power);
+        frontRight.setPower(-power);
+        backLeft.setPower(power);
+        backRight.setPower(-power);
+        runtime.reset();
+        while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
+            opMode.telemetry.addData("drive time", "turn right %2.2f S Elapsed", runtime.seconds());
+            opMode.telemetry.update();
+        }
+        stopRobot();
+    }
+    public void turnLeftTime(double sec, double power) {
+        brakeOn();
+
+        frontLeft.setPower(-power);
+        frontRight.setPower(power);
+        backLeft.setPower(-power);
+        backRight.setPower(power);
+        runtime.reset();
+        while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
+            opMode.telemetry.addData("drive time", "turn right %2.2f S Elapsed", runtime.seconds());
+            opMode.telemetry.update();
+        }
+        stopRobot();
+    }
+    public void turnRightDegree(double degrees) {
+        double secondsToPointTurn = degrees / TURN_DEGRESS_PER_SEC;
+        turnRightTime(secondsToPointTurn, TURN_POWER);
+    }
+    public void turnLeftDegree(double degrees) {
+        double secondsToPointTurn = degrees / TURN_DEGRESS_PER_SEC;
+        turnLeftTime(secondsToPointTurn, TURN_POWER);
     }
 
 }

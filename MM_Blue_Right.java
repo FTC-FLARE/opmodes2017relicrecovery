@@ -13,6 +13,9 @@ public class MM_Blue_Right extends MM_OpMode {
 
         robot.jewelarm.lowerJewelArm();
         robot.pushIncorrectJewel();
+        robot.drivetrain.forwardTime(1.2, .4);
+        robot.drivetrain.turnLeftDegree(90);
+
     }
 }
 
