@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes12833;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="MM TeleOp", group="TeleOp")
@@ -26,9 +25,26 @@ public class MM_TeleOp extends MM_OpMode {
             raiseOrLowerJewelArm();
             closeOrRelease();
             upOrDown();
+            bendElbow();
+            moveArm();
+
             telemetry.update();
         }
     }
+
+    private void moveArm() {
+        robot.relic.setArmPower_K(gamepad2.right_stick_x * .25);
+    }
+
+    private void bendElbow() {
+        if (-gamepad2.left_stick_y >.9)
+            robot.relic.setElbowPower(1);
+        else if (-gamepad2.left_stick_y < -.9)
+            robot.relic.setElbowPower(-1);
+        else
+            robot.relic.setElbowPower(-gamepad2.left_stick_y * .40);
+    }
+
     private void collectOrReleaseGlyph(){
         if (gamepad2.left_bumper) {
             robot.collector.collect(.25);

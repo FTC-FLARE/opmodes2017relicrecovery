@@ -21,8 +21,8 @@ public class MM_Relic_Collector {
     private double currentRightPosition;
     private double currentWristPos;
 
-    final double START_POSITION = 0;
-    final double START_POSITION_LEFT = 0;
+    final double START_POSITION = .9;
+    final double START_POSITION_LEFT = 1;
     final double START_POSITION_RIGHT = 1;
     final double MOVE_POSITION_LEFT = .5;
     final double MOVE_POSITION_RIGHT = .5;
@@ -47,6 +47,12 @@ public class MM_Relic_Collector {
         currentLeftPosition = START_POSITION_LEFT;
         currentRightPosition = START_POSITION_RIGHT;
         currentWristPos = START_POSITION;
+
+/*
+        relicElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        relicElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+*/
+        relicElbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
 
