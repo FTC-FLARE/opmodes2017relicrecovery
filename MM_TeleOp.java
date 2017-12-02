@@ -18,6 +18,8 @@ public class MM_TeleOp extends MM_OpMode {
 
         waitForStart();
 
+        robot.relic.grabRelic();
+
         while (opModeIsActive()) {
             robot.drivetrain.driveWithControl();
             collectOrReleaseGlyph();

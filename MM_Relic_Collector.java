@@ -24,8 +24,8 @@ public class MM_Relic_Collector {
     final double START_POSITION = .9;
     final double START_POSITION_LEFT = 1;
     final double START_POSITION_RIGHT = 1;
-    final double MOVE_POSITION_LEFT = .5;
-    final double MOVE_POSITION_RIGHT = .5;
+    final double MOVE_POSITION_LEFT = .55;
+    final double MOVE_POSITION_RIGHT = .45;
     final double MOVE_POSITION = .5;
 
     public MM_Relic_Collector(LinearOpMode opMode) {
@@ -59,11 +59,15 @@ public class MM_Relic_Collector {
     public void grabRelic () {
         relicGrabberRight.setPosition(MOVE_POSITION_RIGHT);
         relicGrabberLeft.setPosition(MOVE_POSITION_LEFT);
+        currentLeftPosition = MOVE_POSITION_LEFT;
+        currentRightPosition = MOVE_POSITION_RIGHT;
     }
 
     public void releaseRelic() {
         relicGrabberRight.setPosition(START_POSITION_RIGHT);
         relicGrabberLeft.setPosition(START_POSITION_LEFT);
+        currentLeftPosition = START_POSITION_LEFT;
+        currentRightPosition = START_POSITION_RIGHT;
     }
 
     public void extendRelicArm (double power) {
@@ -76,11 +80,11 @@ public class MM_Relic_Collector {
 //        relicXRail.setPosition(.5);
     }
     public void close () {
-        if (currentLeftPosition < 1){
+        if (currentLeftPosition < .8){
             currentLeftPosition = currentLeftPosition + .01;
             relicGrabberLeft.setPosition(currentLeftPosition);
         }
-        if (currentRightPosition > 0) {
+        if (currentRightPosition > .2) {
             currentRightPosition = currentRightPosition - .01;
             relicGrabberRight.setPosition(currentRightPosition);
         }
