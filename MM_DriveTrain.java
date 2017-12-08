@@ -31,6 +31,7 @@ public class MM_DriveTrain {
     final static double TURN_RPS = TURN_POWER * OUTPUT_RPS;
     final static double TURN_DEGRESS_PER_SEC = TURN_RPS * WHEEL_DIAM * 360 / WHEEL_BASE;
 
+    final static double MIN_TO_MOVE = .15;
 
     public MM_DriveTrain(LinearOpMode opMode){
         this.opMode = opMode;
@@ -56,10 +57,17 @@ public class MM_DriveTrain {
     }
 
     public void driveWithControl (){
-        frontLeftPower = -opMode.gamepad1.left_stick_y + opMode.gamepad1.left_stick_x + opMode.gamepad1.right_stick_x;
-        frontRightPower = -opMode.gamepad1.left_stick_y - opMode.gamepad1.left_stick_x - opMode.gamepad1.right_stick_x;
-        backLeftPower = -opMode.gamepad1.left_stick_y - opMode.gamepad1.left_stick_x + opMode.gamepad1.right_stick_x;
-        backRightPower = -opMode.gamepad1.left_stick_y + opMode.gamepad1.left_stick_x - opMode.gamepad1.right_stick_x;
+        double temp = -opMode.gamepad1.left_stick_y + opMode.gamepad1.left_stick_x + opMode.gamepad1.right_stick_x;
+        frontLeftPower = Math.pow(temp, 3) + MIN_TO_MOVE;
+
+        temp = -opMode.gamepad1.left_stick_y - opMode.gamepad1.left_stick_x - opMode.gamepad1.right_stick_x;
+        frontRightPower = Math.pow(temp, 3) + MIN_TO_MOVE;
+;
+        temp = -opMode.gamepad1.left_stick_y - opMode.gamepad1.left_stick_x + opMode.gamepad1.right_stick_x;
+        backLeftPower = Math.pow(temp, 3) + MIN_TO_MOVE;
+
+        temp = -opMode.gamepad1.left_stick_y + opMode.gamepad1.left_stick_x - opMode.gamepad1.right_stick_x;
+        backRightPower = Math.pow(temp, 3) + MIN_TO_MOVE;
 
         setMotorPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
     }
@@ -71,23 +79,16 @@ public class MM_DriveTrain {
     }
     public void strafeLeft(){
         setMotorPower(-.25, .25, .25, -.25);
-
+       // needs work
     }
     public void strafeRight(){
         setMotorPower(.25, -.25, -.25, .25);
-
-    }
-    public void turnRight(double power){
-        setMotorPower(power, -power, power, -power);
-    }
-    public void turnLeft(double power){
-        setMotorPower(-power, power, -power, power);
+        // needs work
     }
     public void stopRobot() {
         setMotorPower(0, 0, 0, 0);
     }
-    public void forwardTime(double sec, double power) {
-        brakeOn();
+    public void driveForwardTime(double sec, double power) {
 
         frontLeft.setPower(power);
         frontRight.setPower(power);
@@ -102,20 +103,19 @@ public class MM_DriveTrain {
         stopRobot();
     }
 
-    private void brakeOn() {
+    public void brakeOn() {
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void backwardTime(double sec, double power) {
-        brakeOn();
-
+    public void driveBackwardTime(double sec, double power) {
         frontLeft.setPower(-power);
         frontRight.setPower(-power);
         backLeft.setPower(-power);
         backRight.setPower(-power);
+
         runtime.reset();
         while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
             opMode.telemetry.addData("drive time", "backward: %2.2f S Elapsed", runtime.seconds());
@@ -124,12 +124,11 @@ public class MM_DriveTrain {
         stopRobot();
     }
     public void turnRightTime(double sec, double power) {
-        brakeOn();
-
         frontLeft.setPower(power);
         frontRight.setPower(-power);
         backLeft.setPower(power);
         backRight.setPower(-power);
+
         runtime.reset();
         while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
             opMode.telemetry.addData("drive time", "turn right %2.2f S Elapsed", runtime.seconds());
@@ -138,12 +137,11 @@ public class MM_DriveTrain {
         stopRobot();
     }
     public void turnLeftTime(double sec, double power) {
-        brakeOn();
-
         frontLeft.setPower(-power);
         frontRight.setPower(power);
         backLeft.setPower(-power);
         backRight.setPower(power);
+
         runtime.reset();
         while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
             opMode.telemetry.addData("drive time", "turn right %2.2f S Elapsed", runtime.seconds());
@@ -161,19 +159,18 @@ public class MM_DriveTrain {
     }
     public void driveForwardInches (double inches) {
         double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
-        forwardTime(secondsToDrive, DRIVE_POWER);
+        driveForwardTime(secondsToDrive, DRIVE_POWER);
     }
     public void driveBackwardInches (double inches) {
         double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
-        backwardTime(secondsToDrive, DRIVE_POWER);
+        driveBackwardTime(secondsToDrive, DRIVE_POWER);
     }
     public void strafeRightTime(double sec, double power) {
-        brakeOn();
-
         frontLeft.setPower(power);
         frontRight.setPower(-power);
         backLeft.setPower(-power);
         backRight.setPower(power);
+
         runtime.reset();
         while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
             opMode.telemetry.addData("drive time", "strafe right %2.2f S Elapsed", runtime.seconds());
@@ -182,12 +179,11 @@ public class MM_DriveTrain {
         stopRobot();
     }
     public void strafeLeftTime(double sec, double power) {
-        brakeOn();
-
         frontLeft.setPower(-power);
         frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(-power);
+
         runtime.reset();
         while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
             opMode.telemetry.addData("drive time", "strafe right %2.2f S Elapsed", runtime.seconds());
@@ -203,8 +199,4 @@ public class MM_DriveTrain {
         double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
         strafeLeftTime(secondsToDrive, DRIVE_POWER);
     }
-
-
-
-
 }

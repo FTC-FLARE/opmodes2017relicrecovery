@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes12833;
 
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,8 +14,8 @@ public class MM_Jewel_Scorer {
 
     final double START_POSITION = 0;
 
-    final double MOVE_POSITION = 0.5;
-    final double COMPENSATE_POSITION = 0.6;
+    final double MOVE_POSITION_PART1 = 0.5;
+    final double MOVE_POSITION_PART2 = 0.6;
 
     public MM_Jewel_Scorer(MM_OpMode opMode) { //Constructor
         this.opMode = opMode;
@@ -27,7 +26,7 @@ public class MM_Jewel_Scorer {
         colorSensor = opMode.hardwareMap.colorSensor.get("sensor_color_distance");
         colorSensor.enableLed(true);
     }
-    public int getLeftJewelColor () {
+    public int getLeftColor() {
         int jewelColor = opMode.NOTHING;
         if (colorSensor.red() > colorSensor.blue()){
             jewelColor = opMode.RED;
@@ -40,14 +39,14 @@ public class MM_Jewel_Scorer {
         return jewelColor;
     }
 
-    public void raiseJewelArm() {
+    public void raise() {
         jewelArm.setPosition(START_POSITION);
         opMode.sleep(2000);
         }
-    public void lowerJewelArm () {
-        jewelArm.setPosition(MOVE_POSITION);
+    public void lower() {
+        jewelArm.setPosition(MOVE_POSITION_PART1);
         opMode.sleep(1000);
-        jewelArm.setPosition(COMPENSATE_POSITION);
+        jewelArm.setPosition(MOVE_POSITION_PART2);
         opMode.sleep(300);
         }
     }

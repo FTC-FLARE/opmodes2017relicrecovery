@@ -2,15 +2,16 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MM_Glyph_Collector {
 
     private DcMotor leftCollector = null;
     private DcMotor rightCollector = null;
-    private TouchSensor digitalChannel = null;
     private ElapsedTime runtime = new ElapsedTime();
+
+    private final static double SQUARE_AND_COLLECT_GLYPH_POWER = .25;
+    private final static double RELEASE_GLYPH_POWER = -1;
 
     private LinearOpMode opMode;
     
@@ -20,7 +21,6 @@ public class MM_Glyph_Collector {
         rightCollector = opMode.hardwareMap.get(DcMotor.class, "right_collector");
         leftCollector = opMode.hardwareMap.get(DcMotor.class, "left_collector");
 
-
         leftCollector.setDirection(DcMotor.Direction.REVERSE);
         rightCollector.setDirection(DcMotor.Direction.FORWARD);
 
@@ -28,20 +28,23 @@ public class MM_Glyph_Collector {
         rightCollector.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-
-    public void pauseCollector() {
+    public void pause() {
         setCollectorPower(0);
     }
-    public void collect(double power) {
-        setCollectorPower(power);
+
+    public void collect() {
+        setCollectorPower(SQUARE_AND_COLLECT_GLYPH_POWER);
     }
 
-    public void release(double power) {
-        setCollectorPower(-power);
+    public void release() {
+        setCollectorPower(RELEASE_GLYPH_POWER);
     }
 
     private void setCollectorPower(double power) {
         leftCollector.setPower(power);
         rightCollector.setPower(power);
+    }
+    public void squareGlyph() {
+        leftCollector.setPower(SQUARE_AND_COLLECT_GLYPH_POWER);
     }
 }

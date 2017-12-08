@@ -16,11 +16,12 @@ public abstract class MM_OpMode extends LinearOpMode {
 
     public void waitToBegin() {
         robot.init();
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
         waitForStart();
     }
-
 }
 
 

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="MM TeleOp", group="TeleOp")
+@TeleOp(name = "MM TeleOp", group = "TeleOp")
 //@Disabled
 public class MM_TeleOp extends MM_OpMode {
 
@@ -11,27 +11,27 @@ public class MM_TeleOp extends MM_OpMode {
     @Override
     public void runOpMode() {
 
-        robot.init();
+        waitToBegin();
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
-        waitForStart();
-
-        robot.relic.grabRelic();
+        robot.relic.grabRelic(); // set grabber to begin
 
         while (opModeIsActive()) {
             robot.drivetrain.driveWithControl();
-            collectOrReleaseGlyph();
-            raiseOrLowerGlyph();
-            raiseOrLowerJewelArm();
-            closeOrRelease();
-            upOrDown();
-            bendElbow();
-//            moveArm();
+
+            controlGlyphCollector();
+            controlLift();
+            controlJewelArm();
+            controlRelicCollector();
 
             telemetry.update();
         }
+    }
+
+    private void controlRelicCollector() {
+        grabOrReleaseRelic();
+        controlWrist();
+        bendElbow();
+        // moveArm();
     }
 
     private void moveArm() {
@@ -39,7 +39,7 @@ public class MM_TeleOp extends MM_OpMode {
     }
 
     private void bendElbow() {
-        if (-gamepad2.left_stick_y >.9)
+        if (-gamepad2.left_stick_y > .9)
             robot.relic.setElbowPower(1);
         else if (-gamepad2.left_stick_y < -.9)
             robot.relic.setElbowPower(-1);
@@ -47,84 +47,83 @@ public class MM_TeleOp extends MM_OpMode {
             robot.relic.setElbowPower(-gamepad2.left_stick_y * .40);
     }
 
-    private void collectOrReleaseGlyph(){
+    private void controlGlyphCollector() {
         if (gamepad2.left_bumper) {
-            robot.collector.collect(.25);
-        }
-        else if (gamepad2.right_bumper) {
-            robot.collector.release(1); //Positive because in the release method power was set to negative.
-        }
-        else {
-            robot.collector.pauseCollector();
+            robot.collector.collect();
+        } else if (gamepad2.right_bumper) {
+            robot.collector.release();
+        } else {
+            robot.collector.pause();
+            if (gamepad2.x) {
+                robot.collector.squareGlyph();
+            }
         }
     }
 
     /*
-        private void raiseOrLowerGlyph() {
+        private void controlLift() {
             if (gamepad2.left_trigger > 0) {
-                robot.lift.lowerGlpyhCollector(1);
+                robot.lift.lower(1);
             }
             else if (gamepad2.right_trigger > 0){
-                robot.lift.raiseGlpyhCollector(1);
+                robot.lift.raise(1);
             }
             else {
-                robot.lift.pauseLift();
+                robot.lift.pause();
             }
         }
     */
-    private void raiseOrLowerJewelArm() { // This method is temporary for testing but will be deleted for competition.
+    private void controlJewelArm() { // This method is temporary for testing but will be deleted for competition.
         if (gamepad2.dpad_down) {
-            robot.jewelarm.lowerJewelArm();
-        }
-        else if (gamepad2.dpad_up) {
-            robot.jewelarm.raiseJewelArm();
+            robot.jewelarm.lower();
+        } else if (gamepad2.dpad_up) {
+            robot.jewelarm.raise();
         }
     }
 
-    private void placeGlyph () {
+    private void placeGlyph() {
         if (gamepad1.a) {
-            robot.lift.raiseGlpyhCollector(1);
-        }
-        else if (gamepad1.b) {
-            robot.lift.lowerGlpyhCollector(1);
+            robot.lift.raise();
+        } else if (gamepad1.b) {
+            robot.lift.lower();
         }
     }
-    private void closeOrRelease () {
+
+    private void grabOrReleaseRelic() {
         if (gamepad2.dpad_left) {
             robot.relic.close();
-        }
-        else if (gamepad2.dpad_right) {
+        } else if (gamepad2.dpad_right) {
             robot.relic.open();
         }
     }
-    private void upOrDown () {
+
+    private void controlWrist() {
         if (gamepad2.a) {
             robot.relic.wristDown();
-        }
-        else if (gamepad2.b) {
+        } else if (gamepad2.b) {
             robot.relic.wristUp();
         }
     }
 
-    private void raiseOrLowerGlyph() {
+    private void controlLift() {
         if (!robot.lift.bottomIsPressed() && gamepad2.right_trigger > 0) {
             telemetry.addData("lift", "You're going down");
-            robot.lift.lowerGlpyhCollector(1);
+            robot.lift.lower();
         } else if (!robot.lift.topIsPressed() && gamepad2.left_trigger > 0) {
             telemetry.addData("lift", "You're going up");
-            robot.lift.raiseGlpyhCollector(1);
+            robot.lift.raise();
         } else if (robot.lift.topIsPressed()) {
             telemetry.addData("lift", "You're stopped");
-            robot.lift.pauseLift();
+            robot.lift.pause();
         } else if (robot.lift.bottomIsPressed()) {
             telemetry.addData("lift", "You're stopped");
-            robot.lift.pauseLift();
+            robot.lift.pause();
         } else if (gamepad2.right_trigger == 0) {
             telemetry.addData("lift", "You're stopped");
-            robot.lift.pauseLift();
+            robot.lift.pause();
         } else if (gamepad2.right_trigger == 0) {
             telemetry.addData("lift", "You're stopped");
-            robot.lift.pauseLift();
+            robot.lift.pause();
         }
     }
 }

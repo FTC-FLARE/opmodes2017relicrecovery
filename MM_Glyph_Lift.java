@@ -13,6 +13,8 @@ public class MM_Glyph_Lift {
     private DigitalChannel touchBottom = null;
     private ElapsedTime runtime = new ElapsedTime();
 
+    private final static double LIFT_POWER = 1;
+
     private LinearOpMode opMode;
 
     public MM_Glyph_Lift(LinearOpMode opMode) {
@@ -26,20 +28,16 @@ public class MM_Glyph_Lift {
         touchBottom = opMode.hardwareMap.get(DigitalChannel.class, "touch_bottom");
     }
 
-    public void pauseLift() {
-        setLiftPower(0);
+    public void pause() {
+        lift.setPower(0);
     }
 
-    public void raiseGlpyhCollector(double power) {
-        setLiftPower(power);
+    public void raise() {
+        lift.setPower(LIFT_POWER);
     }
 
-    public void lowerGlpyhCollector(double power) {
-        setLiftPower(-power);
-    }
-
-    private void setLiftPower(double power) {
-        lift.setPower(power);
+    public void lower() {
+        lift.setPower(-LIFT_POWER);
     }
 
     public boolean topIsPressed() {
