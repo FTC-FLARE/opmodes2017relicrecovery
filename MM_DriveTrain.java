@@ -1,15 +1,18 @@
 package org.firstinspires.ftc.teamcode.opmodes12833;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MM_DriveTrain {
 
-    public DcMotor frontLeft = null;
-    public DcMotor frontRight = null;
-    public DcMotor backLeft = null;
-    public DcMotor backRight = null;
+    private DcMotor frontLeft = null;
+    private DcMotor frontRight = null;
+    private DcMotor backLeft = null;
+    private DcMotor backRight = null;
+
+    public ModernRoboticsI2cRangeSensor rangeSensor;
 
     private LinearOpMode opMode;
     private ElapsedTime runtime = new ElapsedTime();
@@ -41,6 +44,8 @@ public class MM_DriveTrain {
         backLeft  = opMode.hardwareMap.get(DcMotor.class, "blMotor");
         backRight  = opMode.hardwareMap.get(DcMotor.class, "brMotor");
 
+//        rangeSensor = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -57,19 +62,19 @@ public class MM_DriveTrain {
     }
 
     public void driveWithControl (){
-        double temp = -opMode.gamepad1.left_stick_y + opMode.gamepad1.left_stick_x + opMode.gamepad1.right_stick_x;
-        frontLeftPower = Math.pow(temp, 3) + MIN_TO_MOVE;
+        double drive = -opMode.gamepad1.left_stick_y;
+        double strafe = opMode.gamepad1.left_stick_x;
+        double rotate = opMode.gamepad1.right_stick_x;
 
-        temp = -opMode.gamepad1.left_stick_y - opMode.gamepad1.left_stick_x - opMode.gamepad1.right_stick_x;
-        frontRightPower = Math.pow(temp, 3) + MIN_TO_MOVE;
-;
-        temp = -opMode.gamepad1.left_stick_y - opMode.gamepad1.left_stick_x + opMode.gamepad1.right_stick_x;
-        backLeftPower = Math.pow(temp, 3) + MIN_TO_MOVE;
+        frontLeftPower = Math.pow(drive + strafe + rotate, 3);
+        frontRightPower = Math.pow(drive - strafe - rotate, 3);
+        backLeftPower = Math.pow(drive - strafe + rotate, 3);
+        backRightPower = Math.pow(drive + strafe - rotate, 3);
 
-        temp = -opMode.gamepad1.left_stick_y + opMode.gamepad1.left_stick_x - opMode.gamepad1.right_stick_x;
-        backRightPower = Math.pow(temp, 3) + MIN_TO_MOVE;
+        addMinimumPower();   // make sure there is enough power to move the robot
+        normalize();   // get all drive powers within -1 to 1 range
 
-        setMotorPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+        setMotorPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);   // start moving
     }
     public void setMotorPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
         frontLeft.setPower(frontLeftPower);
@@ -198,5 +203,30 @@ public class MM_DriveTrain {
     public void strafeLeftInches(double inches) {
         double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
         strafeLeftTime(secondsToDrive, DRIVE_POWER);
+    }
+    private void normalize() {
+        double maxPower = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+        maxPower = Math.max(maxPower, Math.abs(backLeftPower));
+        maxPower = Math.max(maxPower, Math.abs(backRightPower));
+
+        if (maxPower > 1.0){
+            frontLeftPower /= maxPower;
+            frontRightPower /= maxPower;
+            backLeftPower /= maxPower;
+            backRightPower /= maxPower;
+        }
+    }
+    private void addMinimumPower() {
+        if (frontLeftPower > 0) frontLeftPower += MIN_TO_MOVE;
+        else if (frontLeftPower < 0) frontLeftPower -= MIN_TO_MOVE;
+
+        if (frontRightPower > 0) frontRightPower += MIN_TO_MOVE;
+        else if (frontRightPower < 0) frontRightPower -= MIN_TO_MOVE;
+
+        if (backLeftPower > 0) backLeftPower += MIN_TO_MOVE;
+        else if (backLeftPower < 0) backLeftPower -= MIN_TO_MOVE;
+
+        if (backRightPower > 0) backRightPower += MIN_TO_MOVE;
+        else if (backRightPower < 0) backRightPower -= MIN_TO_MOVE;
     }
 }
