@@ -23,6 +23,7 @@ public class MM_Glyph_Lift {
         lift = opMode.hardwareMap.get(DcMotor.class, "lift");
         lift.setDirection(DcMotor.Direction.FORWARD);
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         touchTop = opMode.hardwareMap.get(DigitalChannel.class, "touch_top");
         touchBottom = opMode.hardwareMap.get(DigitalChannel.class, "touch_bottom");

@@ -6,14 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //@Disabled
 public class MM_TeleOp extends MM_OpMode {
 
-    private MM_Bot robot = new MM_Bot(this);
-
     @Override
     public void runOpMode() {
 
         waitToBegin();
-
-        robot.relic.grabRelic(); // set grabber to begin
 
         while (opModeIsActive()) {
             robot.drivetrain.driveWithControl();
@@ -28,23 +24,20 @@ public class MM_TeleOp extends MM_OpMode {
     }
 
     private void controlRelicCollector() {
-        grabOrReleaseRelic();
         controlWrist();
         bendElbow();
-        // moveArm();
+        moveArm();
     }
 
     private void moveArm() {
-        robot.relic.setArmPower_K(gamepad2.right_stick_x * .25);
+        robot.relic.setArmPower(gamepad2.right_stick_x * .25);
     }
 
     private void bendElbow() {
-        if (-gamepad2.left_stick_y > .9)
-            robot.relic.setElbowPower(1);
-        else if (-gamepad2.left_stick_y < -.9)
-            robot.relic.setElbowPower(-1);
-        else
-            robot.relic.setElbowPower(-gamepad2.left_stick_y * .40);
+        if (-gamepad2.left_stick_y < 0)
+            robot.relic.setElbowPosition(0);
+        else if (-gamepad2.left_stick_y > 0)
+            robot.relic.setElbowPosition(.04);
     }
 
     private void controlGlyphCollector() {
@@ -60,19 +53,6 @@ public class MM_TeleOp extends MM_OpMode {
         }
     }
 
-    /*
-        private void controlLift() {
-            if (gamepad2.left_trigger > 0) {
-                robot.lift.lower(1);
-            }
-            else if (gamepad2.right_trigger > 0){
-                robot.lift.raise(1);
-            }
-            else {
-                robot.lift.pause();
-            }
-        }
-    */
     private void controlJewelArm() { // This method is temporary for testing but will be deleted for competition.
         if (gamepad2.dpad_down) {
             robot.jewelarm.lower();
@@ -86,14 +66,6 @@ public class MM_TeleOp extends MM_OpMode {
             robot.lift.raise();
         } else if (gamepad1.b) {
             robot.lift.lower();
-        }
-    }
-
-    private void grabOrReleaseRelic() {
-        if (gamepad2.dpad_left) {
-            robot.relic.close();
-        } else if (gamepad2.dpad_right) {
-            robot.relic.open();
         }
     }
 
