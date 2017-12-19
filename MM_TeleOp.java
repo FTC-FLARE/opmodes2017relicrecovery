@@ -78,22 +78,13 @@ public class MM_TeleOp extends MM_OpMode {
     }
 
     private void controlLift() {
-        if (!robot.lift.bottomIsPressed() && gamepad2.right_trigger > 0) {
-            telemetry.addData("lift", "You're going down");
-            robot.lift.lower();
-        } else if (!robot.lift.topIsPressed() && gamepad2.left_trigger > 0) {
+        if (gamepad2.right_trigger > 0 && !robot.lift.topIsPressed()) {
             telemetry.addData("lift", "You're going up");
             robot.lift.raise();
-        } else if (robot.lift.topIsPressed()) {
-            telemetry.addData("lift", "You're stopped");
-            robot.lift.pause();
-        } else if (robot.lift.bottomIsPressed()) {
-            telemetry.addData("lift", "You're stopped");
-            robot.lift.pause();
-        } else if (gamepad2.right_trigger == 0) {
-            telemetry.addData("lift", "You're stopped");
-            robot.lift.pause();
-        } else if (gamepad2.right_trigger == 0) {
+        } else if (gamepad2.left_trigger > 0 && !robot.lift.bottomIsPressed()) {
+            telemetry.addData("lift", "You're going down");
+            robot.lift.lower();
+        } else {
             telemetry.addData("lift", "You're stopped");
             robot.lift.pause();
         }
