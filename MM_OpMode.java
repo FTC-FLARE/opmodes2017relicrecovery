@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public abstract class MM_OpMode extends LinearOpMode {
 
     public MM_Bot robot = new MM_Bot(this);
@@ -20,7 +22,11 @@ public abstract class MM_OpMode extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        waitForStart();
+        while (!isStarted()) {
+            telemetry.addData("Range", "%.2f inches", robot.drivetrain.rangeSensor.getDistance(DistanceUnit.INCH));
+//            telemetry.addData("Range", "%.2f inches", 0.0);
+            telemetry.update();
+        }
     }
 }
 

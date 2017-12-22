@@ -44,7 +44,7 @@ public class MM_DriveTrain {
         backLeft  = opMode.hardwareMap.get(DcMotor.class, "blMotor");
         backRight  = opMode.hardwareMap.get(DcMotor.class, "brMotor");
 
-//        rangeSensor = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+        rangeSensor = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);

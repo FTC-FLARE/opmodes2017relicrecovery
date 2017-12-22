@@ -23,23 +23,6 @@ public class MM_TeleOp extends MM_OpMode {
         }
     }
 
-    private void controlRelicCollector() {
-        controlWrist();
-        bendElbow();
-        moveArm();
-    }
-
-    private void moveArm() {
-        robot.relic.setArmPower(gamepad2.right_stick_x * .25);
-    }
-
-    private void bendElbow() {
-        if (-gamepad2.left_stick_y < 0)
-            robot.relic.setElbowPosition(0);
-        else if (-gamepad2.left_stick_y > 0)
-            robot.relic.setElbowPosition(.04);
-    }
-
     private void controlGlyphCollector() {
         if (gamepad2.left_bumper) {
             robot.collector.collect();
@@ -53,30 +36,6 @@ public class MM_TeleOp extends MM_OpMode {
         }
     }
 
-    private void controlJewelArm() { // This method is temporary for testing but will be deleted for competition.
-        if (gamepad2.dpad_down) {
-            robot.jewelarm.lower();
-        } else if (gamepad2.dpad_up) {
-            robot.jewelarm.raise();
-        }
-    }
-
-    private void placeGlyph() {
-        if (gamepad1.a) {
-            robot.lift.raise();
-        } else if (gamepad1.b) {
-            robot.lift.lower();
-        }
-    }
-
-    private void controlWrist() {
-        if (gamepad2.a) {
-            robot.relic.wristDown();
-        } else if (gamepad2.b) {
-            robot.relic.wristUp();
-        }
-    }
-
     private void controlLift() {
         if (gamepad2.right_trigger > 0 && !robot.lift.topIsPressed()) {
             telemetry.addData("lift", "You're going up");
@@ -87,6 +46,50 @@ public class MM_TeleOp extends MM_OpMode {
         } else {
             telemetry.addData("lift", "You're stopped");
             robot.lift.pause();
+        }
+    }
+
+    private void controlJewelArm() { // This method is temporary for testing but will be deleted for competition.
+        if (gamepad2.dpad_down) {
+            robot.jewelarm.lower();
+        } else if (gamepad2.dpad_up) {
+            robot.jewelarm.raise();
+        }
+    }
+
+
+    private void controlRelicCollector() {
+        controlWrist();
+        bendElbow();
+        moveArm();
+    }
+
+    private void controlWrist() {
+        if (gamepad2.a) {
+            robot.relic.wristDown();
+        } else if (gamepad2.b) {
+            robot.relic.wristUp();
+        }
+        else
+            telemetry.addData("Current Wrist", robot.relic.getCurrentWristPos());
+    }
+
+    private void bendElbow() {
+        if (-gamepad2.left_stick_y < 0)
+            robot.relic.setElbowPosition(0);
+        else if (-gamepad2.left_stick_y > 0)
+            robot.relic.setElbowPosition(.04);
+    }
+
+    private void moveArm() {
+        robot.relic.setArmPower(gamepad2.right_stick_x * .25);
+    }
+
+    private void placeGlyph() {
+        if (gamepad1.a) {
+            robot.lift.raise();
+        } else if (gamepad1.b) {
+            robot.lift.lower();
         }
     }
 }

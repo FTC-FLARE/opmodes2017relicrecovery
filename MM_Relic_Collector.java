@@ -11,14 +11,13 @@ public class MM_Relic_Collector {
     private Servo elbow = null;
     private Servo wrist = null;
 
-    private ElapsedTime runtime = new ElapsedTime();
-
-    private LinearOpMode opMode;
+    private double currentWristPos;
 
     private double START_POS_ELBOW = 0;
     private double START_POS_WRIST = 0;
+    private double WRIST_ADJUST_AMOUNT = .01;
 
-    private double currentWristPos;
+    private LinearOpMode opMode;
 
     public MM_Relic_Collector(LinearOpMode opMode) {
         this.opMode = opMode;
@@ -36,26 +35,20 @@ public class MM_Relic_Collector {
         currentWristPos = START_POS_WRIST;
     }
 
-    public void extendArm (double power) {
-        setArmPower(power);
-    }
-    public void retractArm (double power) {
-        setArmPower(-power);
-    }
     public void setArmPower(double power) {
         arm.setPower(power);
         opMode.telemetry.addData("Arm Power ", power);
     }
     public void wristDown() {
         if (currentWristPos < 1) {
-            currentWristPos = currentWristPos + .01;
+            currentWristPos += WRIST_ADJUST_AMOUNT;
             wrist.setPosition(currentWristPos);
             opMode.telemetry.addData("Current Wrist Down", currentWristPos);
         }
     }
     public void wristUp() {
         if (currentWristPos > 0) {
-            currentWristPos = currentWristPos - .01;
+            currentWristPos -= WRIST_ADJUST_AMOUNT;
             wrist.setPosition(currentWristPos);
             opMode.telemetry.addData("Current Wrist Up", currentWristPos);
         }
@@ -65,4 +58,7 @@ public class MM_Relic_Collector {
         opMode.telemetry.addData("Elbow Position ", inPosition);
     }
 
+    public double getCurrentWristPos() {
+        return currentWristPos;
+    }
 }
