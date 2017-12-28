@@ -88,7 +88,7 @@ public class MM_TeleOp extends MM_OpMode {
     }
 
     private void moveArm() {
-        robot.relic.setArmPower(gamepad2.right_stick_x * .25);
+        robot.relic.setArmPower(gamepad2.right_stick_y * .15);
     }
 
     private void placeGlyph() {
