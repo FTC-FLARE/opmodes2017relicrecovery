@@ -25,7 +25,7 @@ public class MM_Bot {
         jewelarm = new MM_Jewel_Scorer(opMode);
     }
 
-    public void pushIncorrectJewel() {
+    public void pushIncorrectJewel(double startRange) {
         int jewelColor = jewelarm.getLeftColor();
         opMode.telemetry.addData("Jewel Color", jewelColor);
         opMode.telemetry.update();
@@ -33,11 +33,15 @@ public class MM_Bot {
         if (jewelColor == opMode.NOTHING) {
             drivetrain.setMotorPower(0, 0, 0, 0);
         } else if (opMode.allianceColor == jewelColor) {
-            drivetrain.driveForwardTime(DRIVE_TIME, DRIVE_POWER);
-            drivetrain.driveBackwardTime(DRIVE_TIME, DRIVE_POWER);
+//            drivetrain.driveForwardTime(DRIVE_TIME, DRIVE_POWER);
+//            drivetrain.driveBackwardTime(DRIVE_TIME, DRIVE_POWER);
+            drivetrain.driveToRange(startRange - 3, MM_DriveTrain.directionToDrive.FWRD);
+            drivetrain.driveToRange(startRange, MM_DriveTrain.directionToDrive.BACK);
         } else {
-            drivetrain.driveBackwardTime(DRIVE_TIME, DRIVE_POWER);
-            drivetrain.driveForwardTime(DRIVE_TIME, DRIVE_POWER);
+//            drivetrain.driveBackwardTime(DRIVE_TIME, DRIVE_POWER);
+//            drivetrain.driveForwardTime(DRIVE_TIME, DRIVE_POWER);
+            drivetrain.driveToRange(startRange + 3, MM_DriveTrain.directionToDrive.BACK);
+            drivetrain.driveToRange(startRange, MM_DriveTrain.directionToDrive.FWRD);
         }
         jewelarm.raise();
     }

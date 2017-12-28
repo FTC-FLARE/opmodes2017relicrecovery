@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public class MM_DriveTrain {
 
     private DcMotor frontLeft = null;
@@ -26,7 +28,7 @@ public class MM_DriveTrain {
     final static double MOTOR_RPM = 160; //ANDYMARK 40 TO 1
     final static double WHEEL_DIAM = 4;
     final static double OUTPUT_RPS = MOTOR_RPM / 60;
-    final static double DRIVE_POWER = .3;
+    final static double DRIVE_POWER = .18;
     final static double DRIVE_RPS = MOTOR_RPM / 60;
     final static double DRIVE_INCHES_PER_SEC = DRIVE_RPS * WHEEL_DIAM * Math.PI;
     final static double TURN_POWER = .8;
@@ -35,6 +37,15 @@ public class MM_DriveTrain {
     final static double TURN_DEGRESS_PER_SEC = TURN_RPS * WHEEL_DIAM * 360 / WHEEL_BASE;
 
     final static double MIN_TO_MOVE = .15;
+    final static double RANGE_TOLERANCE = .5;
+
+    public enum directionToDrive {
+        FWRD,
+        BACK,
+        LEFT,
+        RIGHT,
+        STOP
+    }
 
     public MM_DriveTrain(LinearOpMode opMode){
         this.opMode = opMode;
@@ -76,19 +87,84 @@ public class MM_DriveTrain {
 
         setMotorPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);   // start moving
     }
+    public void driveToRange(double target, directionToDrive direction){
+        boolean reachedTarget = false;
+        while (!reachedTarget & opMode.opModeIsActive()){
+            double current = rangeSensor.getDistance(DistanceUnit.INCH);
+            opMode.telemetry.addData("Driving", direction);
+            opMode.telemetry.addData("Range - Target", target);
+            opMode.telemetry.addData("      - Current", current);
+
+            if (Math.abs(current - target) <= RANGE_TOLERANCE) {
+                reachedTarget = true;
+                stopRobot();
+            }else {
+                stopRobot();
+
+                if (current > target) {
+                    opMode.telemetry.addData("Move", direction);
+                    driveDirection(direction);
+                } else {
+                    opMode.telemetry.addData("Switch to", oppositeDirection(direction));
+                    driveDirection(oppositeDirection(direction));
+                }
+            }
+
+           opMode.telemetry.update();
+        }
+    }
+
+    private void driveDirection(directionToDrive direction){
+        switch (direction){
+            case FWRD: driveForward();
+            break;
+            case BACK: driveBackward();
+            break;
+            case LEFT: strafeLeft();
+            break;
+            case RIGHT: strafeRight();
+            break;
+            default: stopRobot();
+        }
+    }
+
+    private directionToDrive oppositeDirection(directionToDrive direction){
+        opMode.telemetry.addData("Was", direction);
+
+        switch (direction){
+            case FWRD:
+                opMode.telemetry.addData("Now", directionToDrive.BACK);
+                return directionToDrive.BACK;
+            case BACK:
+                opMode.telemetry.addData("Now", directionToDrive.FWRD);
+                return directionToDrive.FWRD;
+            case LEFT:
+                opMode.telemetry.addData("Now", directionToDrive.RIGHT);
+                return directionToDrive.RIGHT;
+            case RIGHT:
+                opMode.telemetry.addData("Now", directionToDrive.LEFT);
+                return directionToDrive.LEFT;
+            default: return directionToDrive.STOP;
+        }
+    }
+
     public void setMotorPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
         frontLeft.setPower(frontLeftPower);
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
     }
+    public void driveForward(){
+        setMotorPower(DRIVE_POWER, DRIVE_POWER, DRIVE_POWER, DRIVE_POWER);
+    }
+    public void driveBackward(){
+        setMotorPower(-DRIVE_POWER, -DRIVE_POWER, -DRIVE_POWER, -DRIVE_POWER);
+    }
     public void strafeLeft(){
-        setMotorPower(-.25, .25, .25, -.25);
-       // needs work
+        setMotorPower(-DRIVE_POWER, DRIVE_POWER, DRIVE_POWER, -DRIVE_POWER);
     }
     public void strafeRight(){
-        setMotorPower(.25, -.25, -.25, .25);
-        // needs work
+        setMotorPower(DRIVE_POWER, -DRIVE_POWER, -DRIVE_POWER, DRIVE_POWER);
     }
     public void stopRobot() {
         setMotorPower(0, 0, 0, 0);

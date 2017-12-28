@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes12833;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Blue Stone Right", group="BLUE")
+@Autonomous(name="Blue Right", group="BLUE")
 
 public class MM_Blue_Right extends MM_OpMode {
 
@@ -13,7 +13,7 @@ public class MM_Blue_Right extends MM_OpMode {
         waitToBegin();
 
         robot.jewelarm.lower();
-        robot.pushIncorrectJewel();
+        robot.pushIncorrectJewel(14);
         robot.drivetrain.driveForwardTime(.9, .8);
         robot.drivetrain.strafeLeftInches(35);
 
