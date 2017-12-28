@@ -8,6 +8,7 @@ public class MM_Jewel_Scorer {
 
     private Servo jewelArm = null;
     private ColorSensor colorSensor = null;
+    private double currentArmPosition;
     private ElapsedTime runtime = new ElapsedTime();
 
     private MM_OpMode opMode;
@@ -22,32 +23,43 @@ public class MM_Jewel_Scorer {
 
         jewelArm = opMode.hardwareMap.servo.get("jewel_arm");
         jewelArm.setPosition(START_POSITION);
+        currentArmPosition = START_POSITION;
 
         colorSensor = opMode.hardwareMap.colorSensor.get("sensor_color_distance");
         colorSensor.enableLed(true);
     }
+
     public int getLeftColor() {
         int jewelColor = opMode.NOTHING;
-        if (colorSensor.red() > colorSensor.blue()){
+        if (colorSensor.red() > colorSensor.blue()) {
             jewelColor = opMode.RED;
-        }
-        else if (colorSensor.blue() > colorSensor.red()){
+        } else if (colorSensor.blue() > colorSensor.red()) {
             jewelColor = opMode.BLUE;
         }
-        opMode.telemetry.addData("Jewel Color", jewelColor);
-        opMode.telemetry.update();
+        opMode.telemetry.addData("Left Jewel", (jewelColor == 1)? "Red": "Blue");
+//        opMode.telemetry.update();
         return jewelColor;
+    }
+
+    public void toggle() {
+        if (currentArmPosition == START_POSITION)
+            lower();
+        else
+            raise();
     }
 
     public void raise() {
         jewelArm.setPosition(START_POSITION);
+        currentArmPosition = START_POSITION;
         opMode.sleep(2000);
-        }
+    }
+
     public void lower() {
         jewelArm.setPosition(MOVE_POSITION_PART1);
-        opMode.sleep(1000);
+        opMode.sleep(500);
         jewelArm.setPosition(MOVE_POSITION_PART2);
         opMode.sleep(300);
-        }
+        currentArmPosition = MOVE_POSITION_PART2;
     }
+}
 
