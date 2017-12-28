@@ -24,6 +24,7 @@ public abstract class MM_OpMode extends LinearOpMode {
 
         while (!isStarted()) {
             telemetry.addData("Range", "%.2f inches", robot.drivetrain.rangeSensor.getDistance(DistanceUnit.INCH));
+            robot.jewelarm.getLeftColor();
 //            telemetry.addData("Range", "%.2f inches", 0.0);
             telemetry.update();
         }
