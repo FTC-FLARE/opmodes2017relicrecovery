@@ -3,19 +3,21 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MM_Relic_Collector {
 
     private DcMotor arm = null;
-    private Servo elbow = null;
     private Servo wrist = null;
+    private Servo grabber = null;
 
-    private double currentWristPos;
+    private double currentGrabberPos;
 
-    private double START_POS_ELBOW = 0;
-    private double START_POS_WRIST = 0;
-    private double WRIST_ADJUST_AMOUNT = .01;
+    private double WRIST_START_POSITION = 0.22;
+    private double WRIST_MID_POSITION = .195;
+    private double WRIST_LIFT_POSITION = .13;
+
+    private double GRABBER_START_POS = .8;
+    private double GRABBER_ADJUST_AMOUNT = .01;
 
     private LinearOpMode opMode;
 
@@ -23,42 +25,48 @@ public class MM_Relic_Collector {
         this.opMode = opMode;
 
         arm = opMode.hardwareMap.get(DcMotor.class, "relic_arm");
-        elbow = opMode.hardwareMap.get(Servo.class, "elbow");
         wrist = opMode.hardwareMap.get(Servo.class, "wrist");
+        grabber = opMode.hardwareMap.get(Servo.class, "grabber");
 
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        elbow.setPosition(START_POS_ELBOW);
-        wrist.setPosition(START_POS_WRIST);
+        wrist.setPosition(WRIST_START_POSITION);
+        grabber.setPosition(GRABBER_START_POS);
 
-        currentWristPos = START_POS_WRIST;
+        currentGrabberPos = GRABBER_START_POS;
     }
 
     public void setArmPower(double power) {
         arm.setPower(power);
         opMode.telemetry.addData("Arm Power ", power);
     }
-    public void wristDown() {
-        if (currentWristPos < 1) {
-            currentWristPos += WRIST_ADJUST_AMOUNT;
-            wrist.setPosition(currentWristPos);
-            opMode.telemetry.addData("Current Wrist Down", currentWristPos);
+    public void grabberOpen() {
+        if (currentGrabberPos < 1) {
+            currentGrabberPos += GRABBER_ADJUST_AMOUNT;
+            grabber.setPosition(currentGrabberPos);
         }
     }
-    public void wristUp() {
-        if (currentWristPos > 0) {
-            currentWristPos -= WRIST_ADJUST_AMOUNT;
-            wrist.setPosition(currentWristPos);
-            opMode.telemetry.addData("Current Wrist Up", currentWristPos);
+    public void grabberClose() {
+        if (currentGrabberPos > 0) {
+            currentGrabberPos -= GRABBER_ADJUST_AMOUNT;
+            grabber.setPosition(currentGrabberPos);
         }
     }
-    public void setElbowPosition(double inPosition){
-        elbow.setPosition(inPosition);
-        opMode.telemetry.addData("Elbow Position ", inPosition);
+    public void raiseWrist(){
+        setWristPosition(WRIST_LIFT_POSITION);
     }
-
-    public double getCurrentWristPos() {
-        return currentWristPos;
+    public void midWrist(){
+        setWristPosition(WRIST_MID_POSITION);
+    }
+    public void lowerWrist(){
+        setWristPosition(WRIST_START_POSITION);
+    }
+    public void setWristPosition(double inPosition){
+        wrist.setPosition(inPosition);
+        opMode.telemetry.addData("Wrist Position ", inPosition);
+    }
+    public double getCurrentGrabberPos() {
+        return currentGrabberPos;
     }
 }

@@ -50,35 +50,41 @@ public class MM_TeleOp extends MM_OpMode {
     }
 
     private void controlJewelArm() { // This method is temporary for testing but will be deleted for competition.
-        if (gamepad2.dpad_down) {
+/*
+        if (gamepad2.y) {
             robot.jewelarm.lower();
-        } else if (gamepad2.dpad_up) {
+        } else if (gamepad2.y) { //    ******* fix this to toggle *******
             robot.jewelarm.raise();
+        }
+*/
+        if (gamepad2.y) {
+            robot.jewelarm.toggle();
         }
     }
 
 
     private void controlRelicCollector() {
-        controlWrist();
-        bendElbow();
+        controlGrabber();
+        bendWrist();
         moveArm();
     }
 
-    private void controlWrist() {
+    private void controlGrabber() {
         if (gamepad2.a) {
-            robot.relic.wristDown();
+            robot.relic.grabberOpen();
         } else if (gamepad2.b) {
-            robot.relic.wristUp();
+            robot.relic.grabberClose();
         }
-        else
-            telemetry.addData("Current Wrist", robot.relic.getCurrentWristPos());
+        telemetry.addData("Current Wrist", robot.relic.getCurrentGrabberPos());
     }
 
-    private void bendElbow() {
-        if (-gamepad2.left_stick_y < 0)
-            robot.relic.setElbowPosition(0);
-        else if (-gamepad2.left_stick_y > 0)
-            robot.relic.setElbowPosition(.04);
+    private void bendWrist() {
+        if (gamepad2.dpad_up)
+            robot.relic.raiseWrist();  // to carry relic
+        else if (gamepad2.dpad_left)
+            robot.relic.midWrist();  // to collect relic
+        else if (gamepad2.dpad_down)
+            robot.relic.lowerWrist();  // back to start position
     }
 
     private void moveArm() {
