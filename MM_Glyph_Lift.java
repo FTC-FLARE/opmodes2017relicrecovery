@@ -37,6 +37,18 @@ public class MM_Glyph_Lift {
         lift.setPower(LIFT_POWER);
     }
 
+    public void raiseForRangeSensor() {
+        raise();
+        opMode.sleep(500);
+        pause();
+    }
+
+    public void lowerForRangeSensor() {
+        lower();
+        opMode.sleep(500);
+        pause();
+    }
+
     public void lower() {
         lift.setPower(-LIFT_POWER);
     }

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 public abstract class MM_OpMode extends LinearOpMode {
 
@@ -16,6 +17,7 @@ public abstract class MM_OpMode extends LinearOpMode {
 
     public int allianceColor = 0;
     public double startRange;
+    public RelicRecoveryVuMark vuMark;
 
     public void waitToBegin() {
         robot.init();
@@ -24,8 +26,10 @@ public abstract class MM_OpMode extends LinearOpMode {
         telemetry.update();
 
         while (!isStarted()) {
-            startRange = robot.drivetrain.rangeSensor.getDistance(DistanceUnit.INCH);
+            startRange = robot.getCurrentDistance();
             telemetry.addData("Range", "%.2f inches", startRange);
+            vuMark = robot.getVuMark();
+            telemetry.addData("VuMark", vuMark);
             robot.jewelarm.getLeftColor();
             telemetry.update();
         }

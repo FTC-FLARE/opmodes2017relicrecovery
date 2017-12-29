@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes12833;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 public class MM_Bot {
 
     public MM_DriveTrain drivetrain = null;
@@ -25,6 +28,13 @@ public class MM_Bot {
         lift = new MM_Glyph_Lift(opMode);
         relic = new MM_Relic_Collector(opMode);
         jewelarm = new MM_Jewel_Scorer(opMode);
+    }
+    public double getCurrentDistance(){
+        return drivetrain.getCurrentDistance();
+    }
+
+    public RelicRecoveryVuMark getVuMark(){
+        return drivetrain.getVuMark();
     }
 
     public void pushIncorrectJewel(double startRange, MM_DriveTrain.directionToDrive direction) {

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 public class MM_DriveTrain {
 
@@ -14,15 +15,16 @@ public class MM_DriveTrain {
     private DcMotor backLeft = null;
     private DcMotor backRight = null;
 
-    public ModernRoboticsI2cRangeSensor rangeSensor;
+    private ModernRoboticsI2cRangeSensor rangeSensor;
+    public MM_VuMarkIdentifier vuMarkIdentifier;
 
     private LinearOpMode opMode;
     private ElapsedTime runtime = new ElapsedTime();
 
-    public double frontLeftPower;
-    public double frontRightPower;
-    public double backLeftPower;
-    public double backRightPower;
+    private double frontLeftPower;
+    private double frontRightPower;
+    private double backLeftPower;
+    private double backRightPower;
 
     //degrees calculations for testbot
     final static double MOTOR_RPM = 160; //ANDYMARK 40 TO 1
@@ -63,6 +65,9 @@ public class MM_DriveTrain {
         backRight.setDirection(DcMotor.Direction.FORWARD);
 
         setToRunWithoutEncoders();
+
+        vuMarkIdentifier = new MM_VuMarkIdentifier(opMode);
+        vuMarkIdentifier.activateTrackables();
     }
 
     private void setToRunWithoutEncoders() {
@@ -90,7 +95,7 @@ public class MM_DriveTrain {
     public void driveToRange(double target, directionToDrive direction){
         boolean reachedTarget = false;
         while (!reachedTarget & opMode.opModeIsActive()){
-            double current = rangeSensor.getDistance(DistanceUnit.INCH);
+            double current = getCurrentDistance();
             opMode.telemetry.addData("Driving", direction);
             opMode.telemetry.addData("Range - Target", target);
             opMode.telemetry.addData("      - Current", current);
@@ -110,6 +115,14 @@ public class MM_DriveTrain {
 
            opMode.telemetry.update();
         }
+    }
+
+    public double getCurrentDistance(){
+        return rangeSensor.getDistance(DistanceUnit.INCH);
+    }
+
+    public RelicRecoveryVuMark getVuMark(){
+        return vuMarkIdentifier.getVumark();
     }
 
     private void driveDirection(directionToDrive direction){
