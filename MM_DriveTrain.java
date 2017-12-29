@@ -99,13 +99,11 @@ public class MM_DriveTrain {
                 reachedTarget = true;
                 stopRobot();
             }else {
-                stopRobot();
-
                 if (current > target) {
                     opMode.telemetry.addData("Move", direction);
                     driveDirection(direction);
                 } else {
-                    opMode.telemetry.addData("Switch to", oppositeDirection(direction));
+                    opMode.telemetry.addData("Switch to", oppositeDirection(direction));  // too far - switch direction
                     driveDirection(oppositeDirection(direction));
                 }
             }
@@ -129,20 +127,14 @@ public class MM_DriveTrain {
     }
 
     private directionToDrive oppositeDirection(directionToDrive direction){
-        opMode.telemetry.addData("Was", direction);
-
         switch (direction){
             case FWRD:
-                opMode.telemetry.addData("Now", directionToDrive.BACK);
                 return directionToDrive.BACK;
             case BACK:
-                opMode.telemetry.addData("Now", directionToDrive.FWRD);
                 return directionToDrive.FWRD;
             case LEFT:
-                opMode.telemetry.addData("Now", directionToDrive.RIGHT);
                 return directionToDrive.RIGHT;
             case RIGHT:
-                opMode.telemetry.addData("Now", directionToDrive.LEFT);
                 return directionToDrive.LEFT;
             default: return directionToDrive.STOP;
         }

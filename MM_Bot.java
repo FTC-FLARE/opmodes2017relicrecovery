@@ -8,6 +8,8 @@ public class MM_Bot {
     public MM_Relic_Collector relic = null;
     public MM_Jewel_Scorer jewelarm = null;
 
+    private double MOVE_TO_HIT_JEWEL = 3;
+
     public static final double DRIVE_TIME = .7;
     public static final double DRIVE_POWER = .7;
 
@@ -25,24 +27,26 @@ public class MM_Bot {
         jewelarm = new MM_Jewel_Scorer(opMode);
     }
 
-    public void pushIncorrectJewel(double startRange) {
+    public void pushIncorrectJewel(double startRange, MM_DriveTrain.directionToDrive direction) {
+        jewelarm.lower();
+
         int jewelColor = jewelarm.getLeftColor();
         opMode.telemetry.addData("Jewel Color", jewelColor);
         opMode.telemetry.update();
 
         if (jewelColor == opMode.NOTHING) {
             drivetrain.setMotorPower(0, 0, 0, 0);
-        } else if (opMode.allianceColor == jewelColor) {
-//            drivetrain.driveForwardTime(DRIVE_TIME, DRIVE_POWER);
-//            drivetrain.driveBackwardTime(DRIVE_TIME, DRIVE_POWER);
-            drivetrain.driveToRange(startRange - 3, MM_DriveTrain.directionToDrive.FWRD);
-            drivetrain.driveToRange(startRange, MM_DriveTrain.directionToDrive.BACK);
+            jewelarm.raise();
+
         } else {
-//            drivetrain.driveBackwardTime(DRIVE_TIME, DRIVE_POWER);
-//            drivetrain.driveForwardTime(DRIVE_TIME, DRIVE_POWER);
-            drivetrain.driveToRange(startRange + 3, MM_DriveTrain.directionToDrive.BACK);
-            drivetrain.driveToRange(startRange, MM_DriveTrain.directionToDrive.FWRD);
+            double hitRange = startRange + MOVE_TO_HIT_JEWEL;
+            if ((opMode.allianceColor == jewelColor && direction == MM_DriveTrain.directionToDrive.FWRD) ||
+                    (opMode.allianceColor != jewelColor && direction == MM_DriveTrain.directionToDrive.BACK)) {
+                hitRange = startRange - MOVE_TO_HIT_JEWEL;
+            }
+            drivetrain.driveToRange(hitRange, direction);  // hit opposing alliance jewel
+            jewelarm.raise();
+            drivetrain.driveToRange(startRange, direction);  // return to start position
         }
-        jewelarm.raise();
     }
 }

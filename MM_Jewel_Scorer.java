@@ -37,7 +37,6 @@ public class MM_Jewel_Scorer {
             jewelColor = opMode.BLUE;
         }
         opMode.telemetry.addData("Left Jewel", (jewelColor == 1)? "Red": "Blue");
-//        opMode.telemetry.update();
         return jewelColor;
     }
 

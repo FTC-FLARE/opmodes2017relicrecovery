@@ -12,10 +12,9 @@ public class MM_Red_Left extends MM_OpMode {
         waitToBegin();
         robot.drivetrain.brakeOn();
 
-        robot.jewelarm.lower();
-        robot.pushIncorrectJewel(36);
+        robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.FWRD);
+        robot.drivetrain.driveToRange(48, MM_DriveTrain.directionToDrive.FWRD);
 
-        robot.drivetrain.driveToRange(36, MM_DriveTrain.directionToDrive.BACK);
 //        robot.drivetrain.driveBackwardTime(1.2, 1);
 //        robot.drivetrain.strafeLeftInches(35);
 

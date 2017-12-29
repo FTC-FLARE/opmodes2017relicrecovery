@@ -15,6 +15,7 @@ public abstract class MM_OpMode extends LinearOpMode {
     final static int NOTHING = 0;
 
     public int allianceColor = 0;
+    public double startRange;
 
     public void waitToBegin() {
         robot.init();
@@ -23,9 +24,9 @@ public abstract class MM_OpMode extends LinearOpMode {
         telemetry.update();
 
         while (!isStarted()) {
-            telemetry.addData("Range", "%.2f inches", robot.drivetrain.rangeSensor.getDistance(DistanceUnit.INCH));
+            startRange = robot.drivetrain.rangeSensor.getDistance(DistanceUnit.INCH);
+            telemetry.addData("Range", "%.2f inches", startRange);
             robot.jewelarm.getLeftColor();
-//            telemetry.addData("Range", "%.2f inches", 0.0);
             telemetry.update();
         }
     }

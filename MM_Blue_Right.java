@@ -8,14 +8,17 @@ public class MM_Blue_Right extends MM_OpMode {
     @Override
     public void runOpMode() {
         allianceColor = BLUE;
-        robot.drivetrain.brakeOn();
 
         waitToBegin();
+        robot.drivetrain.brakeOn();
 
-        robot.jewelarm.lower();
-        robot.pushIncorrectJewel(14);
+        robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.BACK);
+        robot.drivetrain.driveToRange(48, MM_DriveTrain.directionToDrive.BACK);
+
+/*
         robot.drivetrain.driveForwardTime(.9, .8);
         robot.drivetrain.strafeLeftInches(35);
+*/
 
         //robot.drivetrain.turnLeftDegree(90);
         //robot.drivetrain.driveForwardTime(1, .2);
