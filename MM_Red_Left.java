@@ -13,8 +13,22 @@ public class MM_Red_Left extends MM_OpMode {
         waitToBegin();
         robot.drivetrain.brakeOn();
 
-        robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.FWRD);
+        robot.pushIncorrectJewel(startRange);
 
+        double moveInches = -32;  // default center column
+
+        switch (vuMark) {
+            case LEFT:
+                moveInches = -24.5;
+                break;
+            case RIGHT:
+                moveInches = -39.5;
+                break;
+        }
+
+        robot.drivetrain.encoderDrive(.5, moveInches, 5.0);
+/*
+        robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.FWRD);
         robot.lift.raiseForRangeSensor();
 
         double stopAtRange = 55.5;  // default center column
@@ -30,12 +44,7 @@ public class MM_Red_Left extends MM_OpMode {
         robot.drivetrain.driveToRange(stopAtRange, MM_DriveTrain.directionToDrive.FWRD);
 
         robot.lift.lowerForRangeSensor();
-
-//        robot.drivetrain.driveBackwardTime(1.2, 1);
-//        robot.drivetrain.strafeLeftInches(35);
-
-        //robot.drivetrain.turnLeftDegree(90);
-        //robot.drivetrain.driveForwardTime(.2, .2);
+*/
     }
 }
 

@@ -12,17 +12,20 @@ public class MM_Blue_Right extends MM_OpMode {
         waitToBegin();
         robot.drivetrain.brakeOn();
 
-        robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.BACK);
-        robot.drivetrain.driveToRange(48, MM_DriveTrain.directionToDrive.BACK);
+        robot.pushIncorrectJewel(startRange);
 
-/*
-        robot.drivetrain.driveForwardTime(.9, .8);
-        robot.drivetrain.strafeLeftInches(35);
-*/
+        double moveInches = 32;  // default center column
 
-        //robot.drivetrain.turnLeftDegree(90);
-        //robot.drivetrain.driveForwardTime(1, .2);
+        switch (vuMark) {
+            case LEFT:
+                moveInches = 24.5;
+                break;
+            case RIGHT:
+                moveInches = 39.5;
+                break;
+        }
 
+        robot.drivetrain.encoderDrive(.5, moveInches, 5.0);
     }
 }
 

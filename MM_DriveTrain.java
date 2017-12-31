@@ -26,13 +26,22 @@ public class MM_DriveTrain {
     private double backLeftPower;
     private double backRightPower;
 
+    private int flTarget;
+    private int frTarget;
+    private int blTarget;
+    private int brTarget;
+
     //degrees calculations for testbot
     final static double MOTOR_RPM = 160; //ANDYMARK 40 TO 1
+    static final double COUNTS_PER_MOTOR_REV = 1120 ;    // AndyMark
+    static final double DRIVE_GEAR_REDUCTION = 1.0 ;
     final static double WHEEL_DIAM = 4;
     final static double OUTPUT_RPS = MOTOR_RPM / 60;
     final static double DRIVE_POWER = .18;
     final static double DRIVE_RPS = MOTOR_RPM / 60;
     final static double DRIVE_INCHES_PER_SEC = DRIVE_RPS * WHEEL_DIAM * Math.PI;
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAM * 3.1415);
     final static double TURN_POWER = .8;
     final static double WHEEL_BASE = 15.5;
     final static double TURN_RPS = TURN_POWER * OUTPUT_RPS;
@@ -64,17 +73,17 @@ public class MM_DriveTrain {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.FORWARD);
 
-        setToRunWithoutEncoders();
+        setDriveEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         vuMarkIdentifier = new MM_VuMarkIdentifier(opMode);
         vuMarkIdentifier.activateTrackables();
     }
 
-    private void setToRunWithoutEncoders() {
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    private void setDriveEncoderMode(DcMotor.RunMode mode) {
+        frontLeft.setMode(mode);
+        frontRight.setMode(mode);
+        backLeft.setMode(mode);
+        backRight.setMode(mode);
     }
 
     public void driveWithControl (){
@@ -112,7 +121,6 @@ public class MM_DriveTrain {
                     driveDirection(oppositeDirection(direction));
                 }
             }
-
            opMode.telemetry.update();
         }
     }
@@ -285,6 +293,45 @@ public class MM_DriveTrain {
         double secondsToDrive = inches / DRIVE_INCHES_PER_SEC;
         strafeLeftTime(secondsToDrive, DRIVE_POWER);
     }
+
+    public void encoderDrive(double speed, double inches, double timeoutS) {
+        int adjustTicks = (int) (inches * COUNTS_PER_INCH);
+        adjustDriveTargets(adjustTicks);
+
+        setDriveEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setDriveEncoderMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        setMotorPower(DRIVE_POWER, DRIVE_POWER, DRIVE_POWER, DRIVE_POWER);
+
+        waitForDriveTargets();
+        stopRobot();
+    }
+
+    private void waitForDriveTargets() {
+        while (opMode.opModeIsActive() && (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy())){
+            opMode.telemetry.addData("Targets",  " %7d :%7d : %7d : %7d", flTarget,  frTarget, blTarget, brTarget);
+            opMode.telemetry.addData("Current",  " %7d :%7d : %7d : %7d", frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition());
+
+            opMode.telemetry.update();
+        }
+    }
+
+    private void adjustDriveTargets(int adjustTicks) {
+        flTarget = frontLeft.getCurrentPosition() + adjustTicks;
+        frTarget = frontRight.getCurrentPosition() + adjustTicks;
+        blTarget = backLeft.getTargetPosition() + adjustTicks;
+        brTarget = backRight.getTargetPosition() + adjustTicks;
+
+        setDriveTargets(flTarget, frTarget, blTarget, brTarget);
+    }
+
+    private void setDriveTargets(int flTarget, int frTarget, int blTarget, int brTarget) {
+        frontLeft.setTargetPosition(flTarget);
+        frontRight.setTargetPosition(frTarget);
+        backLeft.setTargetPosition(blTarget);
+        backRight.setTargetPosition(brTarget);
+    }
+
     private void normalize() {
         double maxPower = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
         maxPower = Math.max(maxPower, Math.abs(backLeftPower));

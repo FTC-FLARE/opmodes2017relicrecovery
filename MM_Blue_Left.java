@@ -12,14 +12,8 @@ public class MM_Blue_Left extends MM_OpMode {
         waitToBegin();
         robot.drivetrain.brakeOn();
 
-        robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.FWRD);
-        robot.drivetrain.driveToRange(24, MM_DriveTrain.directionToDrive.FWRD);
-
-/*
-        robot.drivetrain.driveBackwardInches(20);
-        robot.drivetrain.strafeLeftInches(30);
-        robot.drivetrain.driveForwardTime(.5, .2);
-*/
+        robot.pushIncorrectJewel(startRange);
+        robot.drivetrain.encoderDrive(.5, 28, 5.0);
     }
 }
 
