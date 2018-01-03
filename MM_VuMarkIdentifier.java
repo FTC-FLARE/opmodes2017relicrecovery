@@ -19,7 +19,13 @@ public class MM_VuMarkIdentifier {
     public MM_VuMarkIdentifier(LinearOpMode opMode) {
         this.opMode = opMode;
         int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        VuforiaLocalizer.Parameters parameters;
+        if (opMode.getClass() == MM_TeleOp.class) {
+            parameters = new VuforiaLocalizer.Parameters();
+        }
+        else {
+            parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        }
         parameters.vuforiaLicenseKey = "Acmakkv/////AAAAGXOA0cuKrEr7hpZ9JgE8SGBfqIBarylU/AFqu2jbyoBkqIk195TyB0KregRR/tMBd9C9366Y1UFqdmXSJr/zfPSONOtMd6Z+r/b6/MmRauAbn/Fjnu4ajUiEDDz3X36jg+mJb3ECZJNNhpMhsXMgADwOnYZvp+8RabsNtEsJubbIVZkjkmLvZ1cF+kyahJYwvYo4Tmf8InGkIfnPk1EikLJhWJmrwSePFOXVasDZw5bNCgIG7Yv+JfUXJ5opkgy0I3qHs9HW0oc4zOoa/z/PB1/Pf3HFDWRVBd7VPz9KUph6XJdkPjf11RWsOTvXQnm/4AH/6kOYqa7lhBHTAcLgLZEMfQZcxz77XV6SKr/2bjSd";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
