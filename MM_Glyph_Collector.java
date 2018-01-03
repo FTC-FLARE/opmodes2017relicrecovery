@@ -10,11 +10,11 @@ public class MM_Glyph_Collector {
     private DcMotor rightCollector = null;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private final static double SQUARE_AND_COLLECT_GLYPH_POWER = .25;
+    private final static double SQUARE_AND_COLLECT_GLYPH_POWER = .33;
     private final static double RELEASE_GLYPH_POWER = -1;
 
     private LinearOpMode opMode;
-    
+
     public MM_Glyph_Collector(LinearOpMode opMode) {
         this.opMode = opMode;
 
@@ -44,7 +44,14 @@ public class MM_Glyph_Collector {
         leftCollector.setPower(power);
         rightCollector.setPower(power);
     }
+
     public void squareGlyph() {
         leftCollector.setPower(SQUARE_AND_COLLECT_GLYPH_POWER);
+    }
+
+    public void releaseAuto() {
+        release();
+        opMode.sleep(1000);
+        pause();
     }
 }

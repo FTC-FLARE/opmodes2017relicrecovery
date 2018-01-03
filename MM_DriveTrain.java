@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.teamcode.opmodes12833;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 public class MM_DriveTrain {
@@ -16,10 +22,12 @@ public class MM_DriveTrain {
     private DcMotor backRight = null;
 
     private ModernRoboticsI2cRangeSensor rangeSensor;
-    public MM_VuMarkIdentifier vuMarkIdentifier;
+    private MM_VuMarkIdentifier vuMarkIdentifier;
+    private BNO055IMU imu;
 
     private LinearOpMode opMode;
     private ElapsedTime runtime = new ElapsedTime();
+    private Orientation angles;
 
     private double frontLeftPower;
     private double frontRightPower;
@@ -33,14 +41,14 @@ public class MM_DriveTrain {
 
     //degrees calculations for testbot
     final static double MOTOR_RPM = 160; //ANDYMARK 40 TO 1
-    static final double COUNTS_PER_MOTOR_REV = 1120 ;    // AndyMark
-    static final double DRIVE_GEAR_REDUCTION = 1.0 ;
+    final static double COUNTS_PER_MOTOR_REV = 1120 ;    // AndyMark
+    final static double DRIVE_GEAR_REDUCTION = 1.0 ;
     final static double WHEEL_DIAM = 4;
     final static double OUTPUT_RPS = MOTOR_RPM / 60;
     final static double DRIVE_POWER = .18;
     final static double DRIVE_RPS = MOTOR_RPM / 60;
     final static double DRIVE_INCHES_PER_SEC = DRIVE_RPS * WHEEL_DIAM * Math.PI;
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    final static double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAM * 3.1415);
     final static double TURN_POWER = .8;
     final static double WHEEL_BASE = 15.5;
@@ -49,6 +57,11 @@ public class MM_DriveTrain {
 
     final static double MIN_TO_MOVE = .15;
     final static double RANGE_TOLERANCE = .5;
+
+    final static double TURN_SPEED              = 0.35;
+
+    final static double HEADING_THRESHOLD       = 1 ;
+    final static double P_TURN_COEFF            = 0.09;
 
     public enum directionToDrive {
         FWRD,
@@ -61,12 +74,21 @@ public class MM_DriveTrain {
     public MM_DriveTrain(LinearOpMode opMode){
         this.opMode = opMode;
 
+        initializeDriveMotors(opMode);
+
+        rangeSensor = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+
+        vuMarkIdentifier = new MM_VuMarkIdentifier(opMode);
+        vuMarkIdentifier.activateTrackables();
+
+        initializeGyro(opMode);
+    }
+
+    private void initializeDriveMotors(LinearOpMode opMode) {
         frontLeft  = opMode.hardwareMap.get(DcMotor.class, "flMotor");
         frontRight  = opMode.hardwareMap.get(DcMotor.class, "frMotor");
         backLeft  = opMode.hardwareMap.get(DcMotor.class, "blMotor");
         backRight  = opMode.hardwareMap.get(DcMotor.class, "brMotor");
-
-        rangeSensor = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
@@ -74,9 +96,16 @@ public class MM_DriveTrain {
         backRight.setDirection(DcMotor.Direction.FORWARD);
 
         setDriveEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
-        vuMarkIdentifier = new MM_VuMarkIdentifier(opMode);
-        vuMarkIdentifier.activateTrackables();
+    private void initializeGyro(LinearOpMode opMode) {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.useExternalCrystal = true;
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+
+        imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
     }
 
     private void setDriveEncoderMode(DcMotor.RunMode mode) {
@@ -356,5 +385,57 @@ public class MM_DriveTrain {
 
         if (backRightPower > 0) backRightPower += MIN_TO_MOVE;
         else if (backRightPower < 0) backRightPower -= MIN_TO_MOVE;
+    }
+    public void gyroTurn (double speed, double angle) {
+        while (opMode.opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
+            opMode.telemetry.update();
+        }
+    }
+        boolean onHeading(double speed, double targetAngle, double PCoeff) {
+            double   error ;
+            double   steer ;
+            boolean  onTarget = false ;
+            double frontleftspeed = 0;
+            double frontrightspeed = 0;
+            double backleftspeed = 0;
+            double backrightspeed = 0;
+
+            error = getError(targetAngle);
+
+            if (Math.abs(error) <= HEADING_THRESHOLD) { //error is within acceptable range
+                steer = 0.0;
+                stopRobot();
+                onTarget = true;
+            }
+            else {
+                steer = getSteer(error, PCoeff);
+                frontrightspeed  = speed * steer;
+                frontleftspeed   = -frontrightspeed;
+                backrightspeed  = speed * steer;
+                backleftspeed   = -frontrightspeed;
+
+                setMotorPower(frontleftspeed, frontrightspeed, backleftspeed, backrightspeed);
+            }
+
+            opMode.telemetry.addData("Current angle", angles.firstAngle);
+            opMode.telemetry.addData("Target", "%5.2f", targetAngle);
+            opMode.telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
+            opMode.telemetry.addData("Speed.", "%5.2f:%5.2f", frontleftspeed, frontrightspeed, backleftspeed, backrightspeed);
+
+            return onTarget;
+        }
+    double getError(double targetAngle) {
+        double robotError;
+
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+        robotError = targetAngle - angles.firstAngle;
+        while (robotError > 180)  robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        if (robotError == 180) robotError = 179;
+        return robotError;
+    }
+
+    double getSteer(double error, double PCoeff) {
+        return Range.clip(error * PCoeff, -1, 1);
     }
 }
