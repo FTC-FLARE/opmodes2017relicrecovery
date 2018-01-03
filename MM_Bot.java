@@ -11,7 +11,7 @@ public class MM_Bot {
     public MM_Relic_Collector relic = null;
     public MM_Jewel_Scorer jewelarm = null;
 
-    private double MOVE_TO_HIT_JEWEL = 2.5;
+    private double MOVE_TO_HIT_JEWEL = 3.0;
 
     public static final double DRIVE_TIME = .7;
     public static final double DRIVE_POWER = .7;
@@ -53,9 +53,10 @@ public class MM_Bot {
             if (opMode.allianceColor != jewelColor)
                 driveInches *= -1;
 
-            drivetrain.encoderDrive(.2, driveInches, 3.0);
+            drivetrain.encoderDrive(.25, driveInches, 3.0);
             jewelarm.raise();
-            drivetrain.encoderDrive(.2, -driveInches, 3.0);
+            drivetrain.encoderDrive(.25, -driveInches, 3.0);
+            opMode.sleep(500);
         }
 
 /*
