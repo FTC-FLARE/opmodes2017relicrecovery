@@ -27,7 +27,7 @@ public class MM_DriveTrain {
 
     private LinearOpMode opMode;
     private ElapsedTime runtime = new ElapsedTime();
-    private Orientation angles;
+    private double currentHeading;
 
     private double frontLeftPower;
     private double frontRightPower;
@@ -78,8 +78,11 @@ public class MM_DriveTrain {
 
         rangeSensor = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
-        vuMarkIdentifier = new MM_VuMarkIdentifier(opMode);
-        vuMarkIdentifier.activateTrackables();
+        if (opMode.getClass() != MM_TeleOp.class) {
+            setDriveEncoderMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            vuMarkIdentifier = new MM_VuMarkIdentifier(opMode);
+            vuMarkIdentifier.activateTrackables();
+        }
 
         initializeGyro(opMode);
     }
@@ -339,17 +342,21 @@ public class MM_DriveTrain {
     private void waitForDriveTargets() {
         while (opMode.opModeIsActive() && (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy())){
             opMode.telemetry.addData("Targets",  " %7d :%7d : %7d : %7d", flTarget,  frTarget, blTarget, brTarget);
-            opMode.telemetry.addData("Current",  " %7d :%7d : %7d : %7d", frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition());
+            currentDrivePositionTelemetry();
 
             opMode.telemetry.update();
         }
     }
 
+    public void currentDrivePositionTelemetry() {
+        opMode.telemetry.addData("Current",  " %7d :%7d : %7d : %7d", frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition());
+    }
+
     private void adjustDriveTargets(int adjustTicks) {
         flTarget = frontLeft.getCurrentPosition() + adjustTicks;
         frTarget = frontRight.getCurrentPosition() + adjustTicks;
-        blTarget = backLeft.getTargetPosition() + adjustTicks;
-        brTarget = backRight.getTargetPosition() + adjustTicks;
+        blTarget = backLeft.getCurrentPosition() + adjustTicks;
+        brTarget = backRight.getCurrentPosition() + adjustTicks;
 
         setDriveTargets(flTarget, frTarget, blTarget, brTarget);
     }
@@ -387,6 +394,7 @@ public class MM_DriveTrain {
         else if (backRightPower < 0) backRightPower -= MIN_TO_MOVE;
     }
     public void gyroTurn (double speed, double angle) {
+        setDriveEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (opMode.opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
             opMode.telemetry.update();
         }
@@ -417,22 +425,26 @@ public class MM_DriveTrain {
                 setMotorPower(frontleftspeed, frontrightspeed, backleftspeed, backrightspeed);
             }
 
-            opMode.telemetry.addData("Current angle", angles.firstAngle);
+            opMode.telemetry.addData("Current angle", getCurrentHeading());
             opMode.telemetry.addData("Target", "%5.2f", targetAngle);
             opMode.telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
-            opMode.telemetry.addData("Speed.", "%5.2f:%5.2f", frontleftspeed, frontrightspeed, backleftspeed, backrightspeed);
+            opMode.telemetry.addData("Speed.", "%5.2f:%5.2f:%5.2f:%5.2f", frontleftspeed, frontrightspeed, backleftspeed, backrightspeed);
 
             return onTarget;
         }
     double getError(double targetAngle) {
         double robotError;
 
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
-        robotError = targetAngle - angles.firstAngle;
+        currentHeading = getCurrentHeading();
+        robotError = targetAngle - currentHeading;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         if (robotError == 180) robotError = 179;
         return robotError;
+    }
+
+    public double getCurrentHeading() {
+        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES).firstAngle;
     }
 
     double getSteer(double error, double PCoeff) {
