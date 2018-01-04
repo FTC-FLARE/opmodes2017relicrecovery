@@ -15,18 +15,21 @@ public class MM_Red_Left extends MM_OpMode {
 
         robot.pushIncorrectJewel(startRange);
 
-        double moveInches = -32;  // default center column
+        double moveInches = -30;  // default center column
 
         switch (vuMark) {
             case LEFT:
-                moveInches = -24.5;
+                moveInches = -37.5;
                 break;
             case RIGHT:
-                moveInches = -39.5;
+                moveInches = -22.5;
                 break;
         }
 
         robot.drivetrain.encoderDrive(.5, moveInches, 5.0);
+        robot.drivetrain.gyroTurn(.35, 90);
+        robot.drivetrain.encoderDrive(.25, 6.0, 2.0);
+        robot.collector.releaseAuto();
 /*
         robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.FWRD);
         robot.lift.raiseForRangeSensor();

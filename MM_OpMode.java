@@ -27,7 +27,9 @@ public abstract class MM_OpMode extends LinearOpMode {
         while (!isStarted()) {
             telemetry.addData("Range", "%.2f inches", robot.getCurrentDistance());
             telemetry.addData("Heading", robot.drivetrain.getCurrentHeading());
-            telemetry.addData("VuMark", robot.getVuMark());
+            if (this.getClass() != MM_TeleOp.class) {
+                telemetry.addData("VuMark", robot.getVuMark());
+            }
             robot.jewelarm.getLeftColor();
             robot.drivetrain.currentDrivePositionTelemetry();
             telemetry.update();
