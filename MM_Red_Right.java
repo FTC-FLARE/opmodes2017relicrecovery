@@ -14,27 +14,26 @@ public class MM_Red_Right extends MM_OpMode {
 
         robot.pushIncorrectJewel(startRange);
 
-        robot.drivetrain.encoderDrive(.5, -28, 5.0);
+        robot.drivetrain.encoderDrive(.5, -25, 5.0);
 
-/*
-        robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.BACK);
+        double moveInches = 14;  // default center column
+        robot.drivetrain.gyroTurn(.35, -90);
 
-        double moveInches = -32;  // default center column
-
-        switch (vuMark) {
+        switch (robot.getVuMark()) {
             case LEFT:
-                moveInches = -24.5;
+                moveInches = 7 + 2 * 7;
                 break;
             case RIGHT:
-                moveInches = -39.5;
+                moveInches = 7;
                 break;
         }
 
         robot.drivetrain.encoderDrive(.5, moveInches, 5.0);
-*/
+        robot.drivetrain.gyroTurn(.35, -180);
+        robot.drivetrain.encoderDrive(.25, 4, 2.0);
+        robot.collector.releaseAuto();
+        robot.drivetrain.encoderDrive(.25, -3.0, 2.0);
+
+
     }
 }
-
-
-
-

@@ -51,7 +51,7 @@ public class MM_Glyph_Collector {
 
     public void releaseAuto() {
         release();
-        opMode.sleep(600);
+        opMode.sleep(700);
         pause();
     }
 }
