@@ -15,8 +15,8 @@ public class MM_Jewel_Scorer {
 
     final double START_POSITION = 0;
 
-    final double MOVE_POSITION_PART1 = 0.5;
-    final double MOVE_POSITION_PART2 = 0.6;
+    final double MOVE_POSITION_PART1 = 0.4;
+    final double MOVE_POSITION_PART2 = 0.65;
 
     public MM_Jewel_Scorer(MM_OpMode opMode) { //Constructor
         this.opMode = opMode;
