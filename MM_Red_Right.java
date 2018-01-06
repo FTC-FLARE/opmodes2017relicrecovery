@@ -32,7 +32,8 @@ public class MM_Red_Right extends MM_OpMode {
         robot.drivetrain.gyroTurn(.35, -180);
         robot.drivetrain.encoderDrive(.25, 4, 2.0);
         robot.collector.releaseAuto();
-        robot.drivetrain.encoderDrive(.25, -3.0, 2.0);
+        robot.drivetrain.encoderDrive(.25, -4.0, 2.0);
+
 
 
     }
