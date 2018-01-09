@@ -12,8 +12,7 @@ public class MM_TeleOp extends MM_OpMode {
         waitToBegin();
 
         while (opModeIsActive()) {
-            robot.drivetrain.driveWithControl();
-
+            controlDrivetrain();
             controlGlyphCollector();
             controlLift();
             controlJewelArm();
@@ -21,6 +20,16 @@ public class MM_TeleOp extends MM_OpMode {
 
             telemetry.update();
         }
+    }
+
+    private void controlDrivetrain() {
+        if (gamepad1.b){
+            robot.drivetrain.setReverseDriveControl(true);
+        }
+        else if (gamepad1.a){
+            robot.drivetrain.setReverseDriveControl(false);
+        }
+        robot.drivetrain.driveWithControl();
     }
 
     private void controlGlyphCollector() {

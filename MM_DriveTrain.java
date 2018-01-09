@@ -11,7 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 public class MM_DriveTrain {
@@ -28,6 +27,7 @@ public class MM_DriveTrain {
     private LinearOpMode opMode;
     private ElapsedTime runtime = new ElapsedTime();
     private double currentHeading;
+    private boolean reverseDriveControl;
 
     private double frontLeftPower;
     private double frontRightPower;
@@ -75,6 +75,7 @@ public class MM_DriveTrain {
         this.opMode = opMode;
 
         initializeDriveMotors(opMode);
+        setReverseDriveControl(false);
 
         rangeSensor = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
@@ -122,6 +123,12 @@ public class MM_DriveTrain {
         double drive = -opMode.gamepad1.left_stick_y;
         double strafe = opMode.gamepad1.left_stick_x;
         double rotate = opMode.gamepad1.right_stick_x;
+
+        if (reverseDriveControl){
+            drive *= -1;
+            strafe *= -1;
+            rotate *= -1;
+        }
 
         frontLeftPower = Math.pow(drive + strafe + rotate, 3);
         frontRightPower = Math.pow(drive - strafe - rotate, 3);
@@ -432,6 +439,11 @@ public class MM_DriveTrain {
 
             return onTarget;
         }
+
+    public void setReverseDriveControl(boolean reverseDriveControl) {
+        this.reverseDriveControl = reverseDriveControl;
+    }
+
     double getError(double targetAngle) {
         double robotError;
 
