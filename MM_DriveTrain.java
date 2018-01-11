@@ -127,7 +127,7 @@ public class MM_DriveTrain {
         if (reverseDriveControl){
             drive *= -1;
             strafe *= -1;
-            rotate *= -1;
+//            rotate *= -1;
         }
 
         frontLeftPower = Math.pow(drive + strafe + rotate, 3);
