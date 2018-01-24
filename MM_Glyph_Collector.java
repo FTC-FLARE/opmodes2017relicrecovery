@@ -10,7 +10,7 @@ public class MM_Glyph_Collector {
     private DcMotor rightCollector = null;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private final static double SQUARE_AND_COLLECT_GLYPH_POWER = .33;
+    private final static double SQUARE_AND_COLLECT_GLYPH_POWER = .4;
     private final static double RELEASE_GLYPH_POWER = -1;
 
     private LinearOpMode opMode;
