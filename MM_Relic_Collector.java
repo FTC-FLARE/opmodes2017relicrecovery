@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class MM_Relic_Collector {
@@ -18,6 +19,7 @@ public class MM_Relic_Collector {
 
     private double GRABBER_START_POS = .8;
     private double GRABBER_ADJUST_AMOUNT = .01;
+    public double MAX = 8000;
 
     private LinearOpMode opMode;
 
@@ -28,6 +30,9 @@ public class MM_Relic_Collector {
         wrist = opMode.hardwareMap.get(Servo.class, "wrist");
         grabber = opMode.hardwareMap.get(Servo.class, "grabber");
 
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -69,4 +74,8 @@ public class MM_Relic_Collector {
     public double getCurrentGrabberPos() {
         return currentGrabberPos;
     }
+    public double getCurrentArmPos() {
+        return arm.getCurrentPosition();
+    }
+
 }

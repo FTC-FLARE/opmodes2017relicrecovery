@@ -59,13 +59,6 @@ public class MM_TeleOp extends MM_OpMode {
     }
 
     private void controlJewelArm() { // This method is temporary for testing but will be deleted for competition.
-/*
-        if (gamepad2.y) {
-            robot.jewelarm.lower();
-        } else if (gamepad2.y) { //    ******* fix this to toggle *******
-            robot.jewelarm.raise();
-        }
-*/
         if (gamepad2.y) {
             robot.jewelarm.toggle();
         }
@@ -97,7 +90,22 @@ public class MM_TeleOp extends MM_OpMode {
     }
 
     private void moveArm() {
-        robot.relic.setArmPower(gamepad2.right_stick_y * .15);
+        double currentArmPos = robot.relic.getCurrentArmPos();
+        double driverRequestPower = gamepad2.right_stick_y;
+        double movePower = 0;
+
+        if ((driverRequestPower < 0 && currentArmPos < robot.relic.MAX) || (driverRequestPower > 0 && currentArmPos > 0)) {
+            telemetry.addLine("Moving Arm");
+            movePower = -driverRequestPower;
+        }
+        if (gamepad2.left_stick_y != 0) {
+            movePower = -gamepad2.left_stick_y;
+        }
+
+        robot.relic.setArmPower(movePower);
+
+        telemetry.addData("Current Arm Position", currentArmPos);
+        telemetry.addData("Y_Stick", gamepad2.right_stick_y);
     }
 
     private void placeGlyph() {
@@ -105,6 +113,18 @@ public class MM_TeleOp extends MM_OpMode {
             robot.lift.raise();
         } else if (gamepad1.b) {
             robot.lift.lower();
+        }
+    }
+
+    private void relicAssist() {
+        if (gamepad2.dpad_right) {
+            robot.relic.midWrist();
+            sleep(1000);
+            robot.relic.grabberOpen();
+            sleep(5000);
+            robot.drivetrain.strafeRightInches(5);
+            robot.relic.raiseWrist();
+            sleep(500);
         }
     }
 }
