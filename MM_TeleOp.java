@@ -64,7 +64,6 @@ public class MM_TeleOp extends MM_OpMode {
         }
     }
 
-
     private void controlRelicCollector() {
         controlGrabber();
         bendWrist();
@@ -91,15 +90,21 @@ public class MM_TeleOp extends MM_OpMode {
 
     private void moveArm() {
         double currentArmPos = robot.relic.getCurrentArmPos();
-        double driverRequestPower = gamepad2.right_stick_y;
+        double driverRequestPower = -gamepad2.right_stick_y;
         double movePower = 0;
 
-        if ((driverRequestPower < 0 && currentArmPos < robot.relic.MAX) || (driverRequestPower > 0 && currentArmPos > 0)) {
-            telemetry.addLine("Moving Arm");
-            movePower = -driverRequestPower;
+        if (robot.relic.relicArmRetracted()){
+            currentArmPos = 0;
+            robot.relic.stopArm();
         }
+
+        if ((driverRequestPower < 0 && !robot.relic.relicArmRetracted()) || (driverRequestPower > 0  && currentArmPos < robot.relic.MAX)) {
+            telemetry.addLine("Moving Arm");
+            movePower = driverRequestPower;
+        }
+
         if (gamepad2.left_stick_y != 0) {
-            movePower = -gamepad2.left_stick_y;
+            movePower = driverRequestPower;
         }
 
         robot.relic.setArmPower(movePower);
@@ -107,7 +112,6 @@ public class MM_TeleOp extends MM_OpMode {
         telemetry.addData("Current Arm Position", currentArmPos);
         telemetry.addData("Y_Stick", gamepad2.right_stick_y);
     }
-
     private void placeGlyph() {
         if (gamepad1.a) {
             robot.lift.raise();

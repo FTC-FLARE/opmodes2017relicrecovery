@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class MM_Relic_Collector {
@@ -10,6 +11,7 @@ public class MM_Relic_Collector {
     private DcMotor arm = null;
     private Servo wrist = null;
     private Servo grabber = null;
+    private DigitalChannel touchRelicArm = null;
 
     private double currentGrabberPos;
 
@@ -19,7 +21,7 @@ public class MM_Relic_Collector {
 
     private double GRABBER_START_POS = .8;
     private double GRABBER_ADJUST_AMOUNT = .01;
-    public double MAX = 8000;
+    public double MAX = 7550;
 
     private LinearOpMode opMode;
 
@@ -29,9 +31,10 @@ public class MM_Relic_Collector {
         arm = opMode.hardwareMap.get(DcMotor.class, "relic_arm");
         wrist = opMode.hardwareMap.get(Servo.class, "wrist");
         grabber = opMode.hardwareMap.get(Servo.class, "grabber");
+        touchRelicArm = opMode.hardwareMap.get(DigitalChannel.class, "touch_relic_arm");
 
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -58,16 +61,16 @@ public class MM_Relic_Collector {
             grabber.setPosition(currentGrabberPos);
         }
     }
-    public void raiseWrist(){
+    public void raiseWrist() {
         setWristPosition(WRIST_LIFT_POSITION);
     }
-    public void midWrist(){
+    public void midWrist() {
         setWristPosition(WRIST_MID_POSITION);
     }
-    public void lowerWrist(){
+    public void lowerWrist() {
         setWristPosition(WRIST_START_POSITION);
     }
-    public void setWristPosition(double inPosition){
+    public void setWristPosition(double inPosition) {
         wrist.setPosition(inPosition);
         opMode.telemetry.addData("Wrist Position ", inPosition);
     }
@@ -77,5 +80,13 @@ public class MM_Relic_Collector {
     public double getCurrentArmPos() {
         return arm.getCurrentPosition();
     }
-
+    public boolean relicArmRetracted() {
+        if (touchRelicArm.getState() == true) {
+            return false;
+        }
+        return true;
+    }
+    public void stopArm() {
+        setArmPower(0);
+    }
 }
