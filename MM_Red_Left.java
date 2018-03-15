@@ -13,24 +13,36 @@ public class MM_Red_Left extends MM_OpMode {
         waitToBegin();
         robot.drivetrain.brakeOn();
 
-        robot.pushIncorrectJewel(startRange);
+        robot.pushIncorrectJewelGyro(startRange);
 
-        double moveInches = -30;  // default center column
+        double moveInches = -32;  // default center column
 
         switch (robot.getVuMark()) {
             case LEFT:
-                moveInches = -37.5;
+                moveInches = -42;
                 break;
             case RIGHT:
-                moveInches = -22.5;
+                moveInches = -25;
                 break;
         }
 
-        robot.drivetrain.encoderDrive(.5, moveInches, 5.0);
-        robot.drivetrain.gyroTurn(.35, 90);
-        robot.drivetrain.encoderDrive(.25, 5.0, 2.0);
+        robot.drivetrain.encoderDrive(.5, moveInches, 10.0);
+        robot.drivetrain.gyroTurn(.5, 90);
+        robot.drivetrain.encoderDrive(.7, 2, 3.0);
+        robot.drivetrain.encoderDrive(.7, -2, 3.0);
         robot.collector.releaseAuto();
-        robot.drivetrain.encoderDrive(.25, -2.0, 2.0);
+        robot.drivetrain.gyroTurn(.8, 180);
+        robot.drivetrain.strafeRightInches(20);
+        robot.drivetrain.strafeLeftInches(10);
+
+
+//        robot.drivetrain.encoderDrive(.5, moveInches, 5.0);
+//        robot.drivetrain.gyroTurn(.35, 90);
+//        robot.drivetrain.encoderDrive(.25, 5.0, 2.0);
+//        robot.collector.releaseAuto();
+//        robot.drivetrain.encoderDrive(.25, -2.0, 2.0);
+
+
 /*
         robot.pushIncorrectJewel(startRange, MM_DriveTrain.directionToDrive.FWRD);
         robot.lift.raiseForRangeSensor();
@@ -49,6 +61,8 @@ public class MM_Red_Left extends MM_OpMode {
 
         robot.lift.lowerForRangeSensor();
 */
+
+
     }
 }
 
