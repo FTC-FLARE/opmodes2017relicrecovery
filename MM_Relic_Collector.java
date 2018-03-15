@@ -16,12 +16,14 @@ public class MM_Relic_Collector {
     private double currentGrabberPos;
 
     private double WRIST_START_POSITION = 0.22;
-    private double WRIST_MID_POSITION = .195;
+    private double WRIST_MID_POSITION = .2;
     private double WRIST_LIFT_POSITION = .13;
 
     private double GRABBER_START_POS = .8;
     private double GRABBER_ADJUST_AMOUNT = .01;
-    public double MAX = 7550;
+    private double GRABBER_OPEN = .95;
+    private double GRABBER_CLOSE = .39;
+    public double MAX = 7400;
 
     private LinearOpMode opMode;
 
@@ -50,16 +52,10 @@ public class MM_Relic_Collector {
         opMode.telemetry.addData("Arm Power ", power);
     }
     public void grabberOpen() {
-        if (currentGrabberPos < 1) {
-            currentGrabberPos += GRABBER_ADJUST_AMOUNT;
-            grabber.setPosition(currentGrabberPos);
-        }
+        setGrabberPosition(GRABBER_OPEN);
     }
     public void grabberClose() {
-        if (currentGrabberPos > 0) {
-            currentGrabberPos -= GRABBER_ADJUST_AMOUNT;
-            grabber.setPosition(currentGrabberPos);
-        }
+        setGrabberPosition(GRABBER_CLOSE);
     }
     public void raiseWrist() {
         setWristPosition(WRIST_LIFT_POSITION);
@@ -74,6 +70,9 @@ public class MM_Relic_Collector {
         wrist.setPosition(inPosition);
         opMode.telemetry.addData("Wrist Position ", inPosition);
     }
+    public void setGrabberPosition(double inPosition) {
+        grabber.setPosition(inPosition);
+    }
     public double getCurrentGrabberPos() {
         return currentGrabberPos;
     }
@@ -87,6 +86,11 @@ public class MM_Relic_Collector {
         return true;
     }
     public void stopArm() {
-        setArmPower(0);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        opMode.telemetry.addLine("Stopping Arm");
+    }
+    public void extendArm(){
+        setArmPower(1);
     }
 }
