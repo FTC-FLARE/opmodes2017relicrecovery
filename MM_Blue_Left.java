@@ -36,9 +36,6 @@ public class MM_Blue_Left extends MM_OpMode {
         robot.drivetrain.encoderDrive(.8, 1.85, 2.0);
         robot.collector.releaseAuto();
         robot.drivetrain.encoderDrive(.8, -1.8, 2.0);
-        robot.drivetrain.gyroTurn(.6, 90);
-        robot.drivetrain.strafeRightInches(20);
-        robot.drivetrain.strafeLeftInches(10);
 
         //glyph compensate
 

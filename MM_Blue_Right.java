@@ -14,11 +14,11 @@ public class MM_Blue_Right extends MM_OpMode {
 
         robot.pushIncorrectJewelGyro(startRange);
 
-        double moveInches = 34;  // default center column
+        double moveInches = 36.5;  // default center column
 
         switch (robot.getVuMark()) {
             case LEFT:
-                moveInches = 27;
+                moveInches = 28;
                 break;
             case RIGHT:
                 moveInches = 44;
@@ -27,12 +27,9 @@ public class MM_Blue_Right extends MM_OpMode {
 
         robot.drivetrain.encoderDrive(.5, moveInches, 10.0);
         robot.drivetrain.gyroTurn(.5, 90);
-        robot.drivetrain.encoderDrive(.7, 2, 3.0);
-        robot.drivetrain.encoderDrive(.7, -2, 3.0);
+        robot.drivetrain.encoderDrive(.7, 2.2, 3.0);
+        robot.drivetrain.encoderDrive(.7, -2.2, 3.0);
         robot.collector.releaseAuto();
-        robot.drivetrain.gyroTurn(.8, 180);
-        robot.drivetrain.strafeRightInches(20);
-        robot.drivetrain.strafeLeftInches(10);
 
 //        robot.drivetrain.encoderDrive(.5, moveInches, 5.0);
 //        robot.drivetrain.gyroTurn(.35, 90);

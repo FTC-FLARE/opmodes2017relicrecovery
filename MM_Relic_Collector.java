@@ -19,7 +19,7 @@ public class MM_Relic_Collector {
     private double WRIST_MID_POSITION = .2;
     private double WRIST_LIFT_POSITION = .13;
 
-    private double GRABBER_START_POS = .8;
+    private double GRABBER_START_POS = .65;
     private double GRABBER_ADJUST_AMOUNT = .01;
     private double GRABBER_OPEN = .95;
     private double GRABBER_CLOSE = .39;
