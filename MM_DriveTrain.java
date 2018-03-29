@@ -45,7 +45,7 @@ public class MM_DriveTrain {
     //degrees calculations for testbot
     final static double MOTOR_RPM = 160; //ANDYMARK 40 TO 1
     final static double COUNTS_PER_MOTOR_REV = 1120;    // AndyMark
-    final static double DRIVE_GEAR_REDUCTION = .75;
+    final static double DRIVE_GEAR_REDUCTION = .62;
     final static double WHEEL_DIAM = 4;
     final static double OUTPUT_RPS = MOTOR_RPM / 60;
     final static double DRIVE_POWER = .18;

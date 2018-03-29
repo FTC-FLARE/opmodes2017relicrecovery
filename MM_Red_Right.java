@@ -8,7 +8,7 @@ public class MM_Red_Right extends MM_OpMode {
 
     @Override
     public void runOpMode() {
-        allianceColor = BLUE;
+        allianceColor = RED;
 
         waitToBegin();
         robot.drivetrain.brakeOn();
@@ -17,28 +17,24 @@ public class MM_Red_Right extends MM_OpMode {
 
         double moveInches = 15;  // default center column
 
-        robot.drivetrain.encoderDrive(.5, 25, 5.0);
-        robot.drivetrain.gyroTurn(.35, 90);
+        robot.drivetrain.encoderDrive(.5, -25, 5.0);
+        robot.drivetrain.gyroTurn(.35, -90);
         robot.drivetrain.setDriveEncoderMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         switch (robot.getVuMark()) {
-            case LEFT:
+            case RIGHT:
                 moveInches = 7;
                 break;
-            case RIGHT:
+            case LEFT:
                 moveInches = 9 + 2 * 7;
                 break;
         }
 
         robot.drivetrain.encoderDrive(.5, moveInches, 7.0);
-        sleep(15000);
-        robot.drivetrain.gyroTurn(.35, 0);
+        robot.drivetrain.gyroTurn(.35, 180);
         robot.drivetrain.encoderDrive(.8, 1.85, 2.0);
         robot.collector.releaseAuto();
         robot.drivetrain.encoderDrive(.8, -1.8, 2.0);
-        robot.drivetrain.gyroTurn(.6, 90);
-        robot.drivetrain.strafeRightInches(20);
-        robot.drivetrain.strafeLeftInches(10);
 
 
 

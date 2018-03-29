@@ -31,9 +31,8 @@ public class MM_Blue_Left extends MM_OpMode {
         }
 
         robot.drivetrain.encoderDrive(.5, moveInches, 7.0);
-        sleep(15000);
         robot.drivetrain.gyroTurn(.35, 0);
-        robot.drivetrain.encoderDrive(.8, 1.85, 2.0);
+        robot.drivetrain.encoderDrive(.8, 4, 2.0);
         robot.collector.releaseAuto();
         robot.drivetrain.encoderDrive(.8, -1.8, 2.0);
 

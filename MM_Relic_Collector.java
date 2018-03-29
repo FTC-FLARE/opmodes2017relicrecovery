@@ -21,7 +21,7 @@ public class MM_Relic_Collector {
 
     private double GRABBER_START_POS = .65;
     private double GRABBER_ADJUST_AMOUNT = .01;
-    private double GRABBER_OPEN = .95;
+    private double GRABBER_OPEN = 1;
     private double GRABBER_CLOSE = .39;
     public double MAX = 7400;
 

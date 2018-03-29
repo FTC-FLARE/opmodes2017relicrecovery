@@ -27,13 +27,17 @@ public class MM_Red_Left extends MM_OpMode {
         }
 
         robot.drivetrain.encoderDrive(.5, moveInches, 10.0);
-        robot.drivetrain.gyroTurn(.5, 90);
-        robot.drivetrain.encoderDrive(.7, 2, 3.0);
-        robot.drivetrain.encoderDrive(.7, -2, 3.0);
+        robot.drivetrain.gyroTurn(.7, 90);
+        robot.drivetrain.encoderDrive(.9, 2, 3.0);
+        robot.drivetrain.encoderDrive(.9, -2, 3.0);
         robot.collector.releaseAuto();
-        robot.drivetrain.gyroTurn(.8, 180);
+        robot.drivetrain.gyroTurn(.9, 270);
         robot.drivetrain.strafeRightInches(20);
         robot.drivetrain.strafeLeftInches(10);
+
+        robot.drivetrain.gyroTurn(1, -90);
+        robot.collector.collect();
+        robot.drivetrain.encoderDrive(1, 60, 5);
 
 
 //        robot.drivetrain.encoderDrive(.5, moveInches, 5.0);

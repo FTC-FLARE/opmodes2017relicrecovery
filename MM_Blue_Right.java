@@ -21,15 +21,28 @@ public class MM_Blue_Right extends MM_OpMode {
                 moveInches = 28;
                 break;
             case RIGHT:
-                moveInches = 44;
+                moveInches = 42;
                 break;
         }
 
         robot.drivetrain.encoderDrive(.5, moveInches, 10.0);
-        robot.drivetrain.gyroTurn(.5, 90);
-        robot.drivetrain.encoderDrive(.7, 2.2, 3.0);
-        robot.drivetrain.encoderDrive(.7, -2.2, 3.0);
+        robot.drivetrain.gyroTurn(.3, 90);
+        robot.drivetrain.encoderDrive(.7, 3.9, 3.0);
+        robot.drivetrain.encoderDrive(.8, -2.2, 3.0);
         robot.collector.releaseAuto();
+        robot.drivetrain.encoderDrive(1, -3, 4);
+        robot.drivetrain.gyroTurn(.5, -90);
+        robot.collector.collect();
+        robot.drivetrain.encoderDrive(1.0 ,30, 6);
+        robot.collector.pause();
+        robot.drivetrain.gyroTurn(.6, 90);
+        //robot.lift.raise();
+        robot.drivetrain.encoderDrive(1, 34, 5);
+        robot.collector.release();
+        robot.collector.pause();
+
+
+
 
 //        robot.drivetrain.encoderDrive(.5, moveInches, 5.0);
 //        robot.drivetrain.gyroTurn(.35, 90);
