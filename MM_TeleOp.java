@@ -17,8 +17,7 @@ public class MM_TeleOp extends MM_OpMode {
             controlLift();
             controlJewelArm();
             controlRelicCollector();
-           // autoRelic();
-            autoPlacement();
+            autoRelicPlacement();
 
             telemetry.update();
         }
@@ -89,18 +88,28 @@ public class MM_TeleOp extends MM_OpMode {
         else if (gamepad2.dpad_down)
             robot.relic.lowerWrist();  // back to start position
     }
-//    private void autoRelic(){
-//        double currentArmPos = robot.relic.getCurrentArmPos();
-//        if (gamepad1.x ) {
-//            robot.relic.extendArm();
-//        }
-//
-//        if (gamepad1.y){
-//            robot.relic.midWrist();
-//            robot.relic.grabberOpen();
-//        }
-//    }
-    private void autoPlacement(){}
+    private void autoRelicPlacement() {
+        if (gamepad1.right_bumper == true) {
+                while (robot.relic.getCurrentArmPos() <= robot.relic.MAX) {
+                    robot.relic.extendArm();
+                }
+                if (robot.relic.getCurrentArmPos() >= robot.relic.MAX){
+                    robot.relic.stopArm();
+                }
+                if (robot.relic.getCurrentArmPos() >= robot.relic.MAX) {
+                robot.relic.midWrist();
+                sleep(100);
+                robot.relic.grabberOpen();
+                sleep(100);
+            }
+            if (robot.relic.getCurrentGrabberPos() == robot.relic.GRABBER_OPEN) {
+                robot.relic.raiseWrist();
+                robot.relic.retractArm();
+            }if (robot.relic.relicArmRetracted()) {
+                robot.relic.stopArm();
+            }
+        }
+    }
     private void moveArm() {
         double currentArmPos = robot.relic.getCurrentArmPos();
         double driverRequestPower = -gamepad2.right_stick_y;

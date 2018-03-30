@@ -21,9 +21,10 @@ public class MM_Relic_Collector {
 
     private double GRABBER_START_POS = .65;
     private double GRABBER_ADJUST_AMOUNT = .01;
-    private double GRABBER_OPEN = 1;
+    public double GRABBER_OPEN = 1;
     private double GRABBER_CLOSE = .39;
-    public double MAX = 7400;
+    public double MAX = 7315;
+    public double MID = 5600;
 
     private LinearOpMode opMode;
 
@@ -93,4 +94,5 @@ public class MM_Relic_Collector {
     public void extendArm(){
         setArmPower(1);
     }
+    public void retractArm(){setArmPower(-1);}
 }

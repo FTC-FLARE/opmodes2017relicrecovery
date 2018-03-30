@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.opmodes12833;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MM_Glyph_Collector {
 
     private DcMotor leftCollector = null;
     private DcMotor rightCollector = null;
+    private DigitalChannel touchGlyph = null;
     private ElapsedTime runtime = new ElapsedTime();
 
     private final static double SQUARE_AND_COLLECT_GLYPH_POWER = 1;
@@ -20,6 +22,7 @@ public class MM_Glyph_Collector {
 
         rightCollector = opMode.hardwareMap.get(DcMotor.class, "right_collector");
         leftCollector = opMode.hardwareMap.get(DcMotor.class, "left_collector");
+        touchGlyph = opMode.hardwareMap.get(DigitalChannel.class, "touch_glyph");
 
         leftCollector.setDirection(DcMotor.Direction.REVERSE);
         rightCollector.setDirection(DcMotor.Direction.FORWARD);
@@ -54,4 +57,9 @@ public class MM_Glyph_Collector {
         opMode.sleep(700);
         pause();
     }
-}
+    public boolean glyphDetected() {
+        if (touchGlyph.getState() == true) {
+            return false;
+        }
+        return true;
+}}

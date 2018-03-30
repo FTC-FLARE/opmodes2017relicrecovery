@@ -32,8 +32,14 @@ public class MM_Blue_Right extends MM_OpMode {
         robot.collector.releaseAuto();
         robot.drivetrain.encoderDrive(1, -3, 4);
         robot.drivetrain.gyroTurn(.5, -90);
-        robot.collector.collect();
-        robot.drivetrain.encoderDrive(1.0 ,30, 6);
+        if (!robot.collector.glyphDetected()){
+            robot.collector.collect();
+            robot.drivetrain.encoderDrive(1.0 ,30, 6);
+            telemetry.addData("no", "hi");
+        }else if (robot.collector.glyphDetected()) {
+            robot.collector.pause();
+            telemetry.addData("hi", "hi");
+        }
         robot.collector.pause();
         robot.drivetrain.gyroTurn(.6, 90);
         //robot.lift.raise();
