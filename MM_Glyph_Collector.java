@@ -9,10 +9,11 @@ public class MM_Glyph_Collector {
 
     private DcMotor leftCollector = null;
     private DcMotor rightCollector = null;
-    private DigitalChannel touchGlyph = null;
+    private DigitalChannel touchGlyph1 = null;
+    private DigitalChannel touchGlyph2 = null;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private final static double SQUARE_AND_COLLECT_GLYPH_POWER = 1;
+    private final static double SQUARE_AND_COLLECT_GLYPH_POWER = .9;
     private final static double RELEASE_GLYPH_POWER = -1;
 
     private LinearOpMode opMode;
@@ -22,7 +23,8 @@ public class MM_Glyph_Collector {
 
         rightCollector = opMode.hardwareMap.get(DcMotor.class, "right_collector");
         leftCollector = opMode.hardwareMap.get(DcMotor.class, "left_collector");
-        touchGlyph = opMode.hardwareMap.get(DigitalChannel.class, "touch_glyph");
+        touchGlyph1 = opMode.hardwareMap.get(DigitalChannel.class, "touch_glyph_1");
+        touchGlyph2 = opMode.hardwareMap.get(DigitalChannel.class, "touch_glyph_2");
 
         leftCollector.setDirection(DcMotor.Direction.REVERSE);
         rightCollector.setDirection(DcMotor.Direction.FORWARD);
@@ -37,6 +39,14 @@ public class MM_Glyph_Collector {
 
     public void collect() {
         setCollectorPower(SQUARE_AND_COLLECT_GLYPH_POWER);
+    }
+
+    public void autoCollect(){
+        if (!glyphDetected()){
+            setCollectorPower(.9);
+        }else if (glyphDetected()){
+            pause();
+        }
     }
 
     public void release() {
@@ -58,8 +68,11 @@ public class MM_Glyph_Collector {
         pause();
     }
     public boolean glyphDetected() {
-        if (touchGlyph.getState() == true) {
+        if (touchGlyph1.getState() == true) {
+            return false;
+        } else if (touchGlyph2.getState() == true) {
             return false;
         }
         return true;
-}}
+    }
+}

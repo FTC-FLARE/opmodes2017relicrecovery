@@ -271,6 +271,7 @@ public class MM_DriveTrain {
         stopRobot();
     }
 
+
     public void brakeOn() {
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -385,7 +386,7 @@ public class MM_DriveTrain {
         setDriveEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         setDriveEncoderMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        setMotorPower(DRIVE_POWER, DRIVE_POWER, DRIVE_POWER, DRIVE_POWER);
+        setMotorPower(speed, speed, speed, speed);
 
         waitForDriveTargets();
         stopRobot();

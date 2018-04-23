@@ -33,8 +33,19 @@ public class MM_Glyph_Lift {
         lift.setPower(0);
     }
 
-    public void raise() {
+    public void raise(){
         lift.setPower(LIFT_POWER);
+    }
+    public void raiseLiftTime(double sec, double power){
+
+        lift.setPower(power);
+
+        runtime.reset();
+        while (opMode.opModeIsActive() && (runtime.seconds() < sec)) {
+            opMode.telemetry.addData("lift time", "forward: %2.2f S Elapsed", runtime.seconds());
+            opMode.telemetry.update();
+        }
+        pause();
     }
 
     public void raiseForRangeSensor() {

@@ -12,6 +12,7 @@ public class MM_Blue_Left extends MM_OpMode {
 
         waitToBegin();
         robot.drivetrain.brakeOn();
+        robot.lift.raiseLiftTime (.35, 1);
 
         robot.pushIncorrectJewelGyro(startRange);
 
@@ -31,6 +32,8 @@ public class MM_Blue_Left extends MM_OpMode {
         }
 
         robot.drivetrain.encoderDrive(.5, moveInches, 7.0);
+        robot.lift.raiseLiftTime (.35, -1);
+
         robot.drivetrain.gyroTurn(.35, 0);
         robot.drivetrain.encoderDrive(.8, 4, 2.0);
         robot.collector.releaseAuto();
